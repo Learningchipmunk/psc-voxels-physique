@@ -1,0 +1,11 @@
+Il ne faut pas écrire sur les mêmes lignes que ses camarades dans un même fichier !
+
+C.f. :
+https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
+
+Branches:
+Master (aka JC)
+Anto
+Nono
+Paul
+Ronan
