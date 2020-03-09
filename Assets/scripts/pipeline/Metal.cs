@@ -18,26 +18,30 @@ public class Metal : MonoBehaviour
     //Probility of being a solvant
     public const float P = 0.56f;
 
-    // Number of atoms in the metal
-    public const int N = 100;
-
-    // Number of oxidized atoms in the metal
-    public int no = 0;
 
     // Number of acid on the surface of the metal
-    public int sa = 0;
+    public float s_a;
 
     // Maximum number of acid on the surface of the metal
-    int msa = 20;
+    public float M_sa;
+
+    // volume (cubic meter)
+    public float V;
+    
+    // metal concentration (mole per cubic meter)
+    public const float C_m = 500.0f;
+
+    // amount of metal (mole)
+    public float Nm;
+    
+    // amount of oxidised metal (mole); <= nm
+    public float nox;
 
     // The speed of the reaction
     float deltaT = 0.3f;
 
     // The time of last reaction
     public float lastReaction = 0f;
-
-
-    public const float arrCube = 12f;
 
     public const float raideurInitial = 1000f;
     const float raideurOx = 900f;    
@@ -55,30 +59,13 @@ public class Metal : MonoBehaviour
 
     public void UpdateTexture()
     {
-        // if(3 * no > N && no < N)
-        // {
-        //     visual.material = ErodedTexture;
-        // }
-        // else if(no == N && !isCompletelyCorroded)
-        // {
-        //     float p =  Random.Range(0.0f, 1.0f);
-        //     if(p <= P)
-        //     {
-        //         visual.enabled = false;
-        //         Destroy(gameObject);
-        //     }
-        //     else{
-        //         visual.material = CompletelyEroded;
-        //         isCompletelyCorroded = true;
-        //     }
-        // }
         if(!isCompletelyCorroded)
         {
             //Get the Renderer component from the new cube
             var cubeRenderer = visual;
 
             //Get the proportion of the non-eroded atoms.
-            float prop = (float)no/N;
+            float prop = (float)nox/Nm;
             
             //for prop = 1, the triplet (R, G, B) defines the color Dark Brown
             float R = 1 - prop * (1.0f - 0.296f);
@@ -89,7 +76,7 @@ public class Metal : MonoBehaviour
             cubeRenderer.material.SetColor("_Color", new Color(R, G, B, prop/2));
 
             //Random Draw that decides if the acid is destroyed or passivated.    
-            if(no == N)
+            if(nox >= Nm)
             {
                 isCompletelyCorroded = true;
                 
@@ -113,77 +100,75 @@ public class Metal : MonoBehaviour
 
     public void UpdateDistance()
     {
-        this.referenceVoxel.breakingDistanceCoef = (no * (distanceOxCoef - distanceInitialCoef) + (N - no) * distanceInitialCoef) / N;
+        this.referenceVoxel.breakingDistanceCoef = (nox * (distanceOxCoef - distanceInitialCoef) + (Nm - nox) * distanceInitialCoef) / Nm;
     }
 
     public void UpdateRaideur()
     {
-        this.referenceVoxel.k = (no * (raideurOx - raideurInitial) + (N - no) * raideurInitial) / N;
+        this.referenceVoxel.k = (nox * (raideurOx - raideurInitial) + (Nm - nox) * raideurInitial) / Nm;
     }
 
-    public int UpdateNo(int sa, float lambdaA)
-    {
+    public float UpdateNox(float lambdaA) {
         // if sa == 0 there is no reaction
-        if(sa == 0)return 0;
+        if(s_a <= 0)return 0;
 
         // We store the reaction time
         lastReaction = Time.time;
         // Mesure the Delta
-        int delta = no;
+        float delta = nox;
 
         //Typical model.
         //no = Mathf.Min(N, no + np);
 
         //Lambda model by Nono.
-        no = Mathf.Min(N, no + (sa) / (int)(lambdaM - lambdaA) + 1);
+        nox = Mathf.Min(Nm, nox + s_a / (int)(lambdaM - lambdaA) + 1);
 
-        // Compute the delta
-        delta = no - delta;
+        // Compute the delta >=0
+        delta = nox - delta;
 
 
         // Remove the acid particules that reacted with the metal
         return delta;
-
     }
 
     // Decreases the number of acids that are around the metal
-    public void UpdateSa(int decrease)
+    public void UpdateS_a(float decrease)
     {
-        sa = Mathf.Max(0 , sa - decrease);
+        s_a = Mathf.Max(0 , s_a - decrease);
     }
 
-    public int FillSa(int np, float lambdaA)
+    public float FillS_a(float na, float lambdaA)
     {
         // We record the time of the first collision to monitor the reaction
-        if(sa == 0)lastReaction = Time.time;
+        if(s_a <= 0)lastReaction = Time.time;
 
 
         // Assigning lambdaA to the metal
         this.lambdaA = lambdaA;
 
-        // We strore the initial value of sa to know how much acid was absorbed
-        int valInitiale = sa;
+        // We store the initial value of sa to know how much acid was absorbed
+        float v_ini = s_a;
 
         // There can't be more acid on the surface (absorbed) than msa
-        sa = Mathf.Min(msa, sa + np);
+        s_a = Mathf.Min(M_sa, s_a + na);
 
         // We return the amount of acid absorbed
-        return sa - valInitiale;
+        return s_a - v_ini;
     }
 
     
-    public int GetN()
+    public float GetNm()
     {
-        return N;
+        return Nm;
     }
-    public int GetNo()
+    public float GetNox()
     {
-        return no;
+        return nox;
     }
 
-    public int GetSa()
+    public float GetS_a()
     {
-        return sa;
+        return s_a;
     }
 
     public float getLambdaM()
@@ -198,7 +183,7 @@ public class Metal : MonoBehaviour
 
     void Oxidisation()
     {
-        UpdateSa(UpdateNo(sa, lambdaA));
+        UpdateS_a(UpdateNox(lambdaA));
     }
 
     
@@ -229,18 +214,21 @@ public class Metal : MonoBehaviour
 
         // To find the platform that stores the lists of metals
         referenceScript = GameObject.FindWithTag("Platform").GetComponent<MetalUpdater>();
-        // 0 atoms have been eroded initialy
-        no = 0;
+        
+        // volume and amount of metal
+        V = this.transform.localScale.x * this.transform.localScale.y * this.transform.localScale.z ;
+        Nm = V*C_m;
+        M_sa = Nm/5;
 
-    }
-
-    public void UpdateState(float T, float P){
-   
+        // 0 atoms have been eroded initially
+        nox = 0f;
+        // 0 acid initially
+        s_a = 0f;
     }
 
     public void UpdateMetal()
     {
-        if(Time.time >= lastReaction + deltaT && sa > 0)
+        if(Time.time >= lastReaction + deltaT && s_a > 0)
         {
             // Debug.Log(lastReaction);
             // Trigger a reaction
