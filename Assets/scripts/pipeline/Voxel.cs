@@ -147,7 +147,8 @@ void HookeForce(){
             Debug.Log(this.name + " " + this.transform.parent.name + " was too far from " + neighbor.name + " " + neighbor.transform.parent.name);
             return new Vector3(0,0,0);
         }
-        return this.k * (neighbor.transform.position - this.transform.position);
+        float avg_k = this.k*neighbor.GetComponent<Voxel>().k / (this.k+neighbor.GetComponent<Voxel>().k);
+        return avg_k * dPos;
     }
 
     // public Vector3 TorsionPendulum(GameObject voxel1, GameObject voxel2){
