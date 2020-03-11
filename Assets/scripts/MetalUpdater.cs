@@ -39,7 +39,7 @@ public class MetalUpdater : MonoBehaviour
             M.UpdateMetal();
             
             // if sa is null, than there is no need to update the metal afterwards
-            if(M.GetSa() == 0)
+            if(M.GetS_a() == 0)
             {
                 // So we remove the metal from the list of updates
                 removeMetal(M);
