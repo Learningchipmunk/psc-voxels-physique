@@ -72,14 +72,11 @@ public class Acid : MonoBehaviour
             Metal M = collisionInfo.gameObject.GetComponent<Metal>();
             float nox = M.GetNox();
             float Nm = M.GetNm();
-            float LambdaM = M.getLambdaM();
 
             // Adding the metal to the metal list
             referenceScript.addMetal(M);
 
             //Udating the parameters of the corrosion.
-            // M.UpdateNo(np, lambdaA);
-            // UpdateNp(N, no, LambdaM);
             Update_na(M.FillS_a(na, lambdaA));
             M.UpdateDistance();
             M.UpdateRaideur();

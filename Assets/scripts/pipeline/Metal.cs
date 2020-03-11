@@ -13,38 +13,38 @@ public class Metal : MonoBehaviour
 
     private MeshRenderer visual;
 
-    bool isCompletelyCorroded = false;
+    private bool isCompletelyCorroded = false;
 
     //Probility of being a solvant
-    public const float P = 0.56f;
+    public float P_solv = 0.56f;
 
 
     // Number of acid on the surface of the metal
-    public float s_a;
+    private float s_a;
 
     // Maximum number of acid on the surface of the metal
-    public float M_sa;
+    private float M_sa;
 
     // volume (cubic meter)
-    public float V;
+    private float V;
     
     // metal concentration (mole per cubic meter)
-    public const float C_m = 500.0f;
+    public float C_m = 500.0f;
 
     // amount of metal (mole)
-    public float Nm;
+    private float Nm;
     
     // amount of oxidised metal (mole); <= nm
-    public float nox;
+    private float nox;
 
     // The speed of the reaction
     float deltaT = 0.3f;
 
     // The time of last reaction
-    public float lastReaction = 0f;
+    private float lastReaction = 0f;
 
     public const float raideurInitial = 1000f;
-    const float raideurOx = 900f;    
+    public const float raideurOx = 900f;    
     public const float distanceInitialCoef = 1.25f;
     public const float distanceOxCoef = 1.1f;
 
@@ -82,7 +82,7 @@ public class Metal : MonoBehaviour
                 
                 //Uniform distribution
                 float p =  Random.Range(0.0f, 1.0f);
-                if(p <= P)
+                if(p <= P_solv)
                 {
                     // When destoryed it remove itself from the list of metals in Platform
                     referenceScript.removeMetal(this.GetComponent<Metal>());
