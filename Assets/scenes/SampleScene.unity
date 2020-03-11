@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 102118}
   - component: {fileID: 102115}
   - component: {fileID: 102116}
+  - component: {fileID: 102117}
   m_Layer: 0
   m_Name: FPSController
   m_TagString: Untagged
@@ -184,6 +185,20 @@ MonoBehaviour:
   target: {fileID: 1326447810}
   invertRate1: 0
   invertRate2: 1
+--- !u!114 &102117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ee0710891b3004aa4cb53af24a43b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 7907969274891328493, guid: 0ff04bf05e5b4fa4f9de6fcf98776811,
+    type: 3}
 --- !u!143 &102118
 CharacterController:
   m_ObjectHideFlags: 0
