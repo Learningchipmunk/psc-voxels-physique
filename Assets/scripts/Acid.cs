@@ -13,29 +13,30 @@ public class Acid : MonoBehaviour
     // To store the MeshRenderer and change the color of the acid
     private MeshRenderer visual;
 
-    // volume (cubic meter)
-    public float V;
-    public float lambdaA = 7.2f;
+    // chemical constants
+        // acid concentration (mole per cubic meter)
+        public float c_ini = 10000.0f;
 
-    // acid concentration (mole per cubic meter)
-    public const float C_Ini = 10000.0f;
+        // acid amount (mole) : initialised with C_ini
+        private float _na_ini;
+        private float _na;
+        
+        // maximum fraction of acid transferred
+        public  const float Fracmax = 0.4f;
 
-    // acid amount (mole) : initialised with C_ini and V
-    public float na;
+    // acid deleting constants
+        // Creating a timer to destroy the acid after 5 seconds of creation.
+        private float _startingTime;
+        // EvaporationTime 
+        private float _evaporationTime = 8f;
 
-
-    // Creating a timer to destroy the acid after 5 seconds of creation.
-    float startingTime;
-    // EvaporationTime 
-    float evaporationTime = 8f;
-
-    // Giving a random factor to time.
-    float P = 0.5f;
+        // Giving a random factor to time.
+        private float _p = 0.5f;
 
 
     // Removing the acid that was absorbed by the metal
     void Update_na(float used) {
-        na = Mathf.Max(0, na - used);
+        _na = Mathf.Max(0, _na - used);
     }
 
     // Destroys the acid if it has been created for more than 6 seconds
@@ -49,16 +50,16 @@ public class Acid : MonoBehaviour
         // }
         
         // Randomisation of the acid's destruction.
-        if(Time.time - startingTime >= evaporationTime)
+        if(Time.time - _startingTime >= _evaporationTime)
         {
             float p =  Random.Range(0.0f, 1.0f);
-            if(p <= P)
+            if(p <= _p)
             {
                 Destroy(gameObject); 
             }
-            P += 0.1f;
-            evaporationTime += 0.5f;
-        }else if(Time.time - startingTime >= 8.5 && P == 1)
+            _p += 0.1f;
+            _evaporationTime += 0.5f;
+        }else if(Time.time - _startingTime >= 8.5 && _p == 1)
         {
             Destroy(gameObject); 
         }
@@ -70,33 +71,22 @@ public class Acid : MonoBehaviour
             
             // Getting info on the metal.
             Metal M = collisionInfo.gameObject.GetComponent<Metal>();
-            float nox = M.GetNox();
-            float Nm = M.GetNm();
-            float LambdaM = M.getLambdaM();
+            float neq = M.GetNeq();
+            float nm = M.GetNm();
 
-            // Adding the metal to the metal list
+            float delta_na = Mathf.Min(nm - neq, Fracmax*_na_ini, _na);
+
+            Update_na(delta_na);
+            // triggering corroding updates
+            M.UpdateNeq(delta_na);
             referenceScript.addMetal(M);
-
-            //Udating the parameters of the corrosion.
-            // M.UpdateNo(np, lambdaA);
-            // UpdateNp(N, no, LambdaM);
-            Update_na(M.FillS_a(na, lambdaA));
-            M.UpdateDistance();
-            M.UpdateRaideur();
-
-            // Updating the texture of the metal
-            M.UpdateTexture();
-
-            // Checking if the metal was completely correded. If so we destroy the acid.
-            bool isCompletelyCorroded = M.getIsCompletelyCorroded();// to move if not realistic            
             
-            // Destroys the Acid
-            if(isCompletelyCorroded || na == 0)
+            if(_na == 0)
             {
                 visual.enabled = false;
                 Destroy(gameObject);
             }
-            //movement.enabled = false;
+            
         }
     }
 
@@ -110,21 +100,20 @@ public class Acid : MonoBehaviour
 
         if(collisionInfo.collider.tag.Contains("voxel"))
         {
-            // Getting the info on the Metal 
-            Metal M = collisionInfo.gameObject.GetComponent<Metal>();
-            
-            // filling the acid tank
-            Update_na(M.FillS_a(na, lambdaA));
-            
-            // Adding the metal to the metal list
+            // Getting the info on the Metal
+            Metal M = collisionInfo.gameObject.GetComponent<Metal>(); 
+            float neq = M.GetNeq();
+            float nm = M.GetNm();
+
+            float delta_na = Mathf.Min(nm - neq, Fracmax*_na_ini, _na);
+
+            Update_na(delta_na);
+            // triggering corroding updates
+            M.UpdateNeq(delta_na);
             referenceScript.addMetal(M);
-
-
-            // Checking if the metal was completely correded. If so we destroy the acid.
-            bool isCompletelyCorroded = M.getIsCompletelyCorroded();// to move if not realistic            
             
             // Destroys the Acid
-            if(isCompletelyCorroded || na == 0)
+            if(_na == 0)
             {
                 visual.enabled = false;
                 Destroy(gameObject);
@@ -182,14 +171,15 @@ public class Acid : MonoBehaviour
 
 
         // Starting the timer to track the lifetime of the acid
-        startingTime = Time.time;
+        _startingTime = Time.time;
 
         // Tagging the acid
         tag = "Acid";
 
-        // Calculating the volum of the acid
-        V = this.transform.localScale.x * this.transform.localScale.y * this.transform.localScale.z ;
-        na = V*C_Ini;
+        // Calculating the volum (cubic meter) of the acid
+        float v = this.transform.localScale.x * this.transform.localScale.y * this.transform.localScale.z ;
+        _na_ini = c_ini*v;
+        _na = _na_ini; 
     }
 
     void FixedUpdate()

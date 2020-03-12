@@ -38,8 +38,8 @@ public class MetalUpdater : MonoBehaviour
 
             M.UpdateMetal();
             
-            // if sa is null, than there is no need to update the metal afterwards
-            if(M.GetS_a() == 0)
+            // if balance is reached, than there is no need to update the metal afterwards
+            if(M.EqReached())
             {
                 // So we remove the metal from the list of updates
                 removeMetal(M);
