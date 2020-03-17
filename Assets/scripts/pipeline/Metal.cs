@@ -32,9 +32,7 @@ public class Metal : MonoBehaviour
         public const float distanceInitialCoef = 1.25f;
         public const float distanceOxCoef = 1.1f;
 
-    
-    
-    // thermodynamic constants (will be replaced by an abstract class)
+    // thermodynamic constants (some will be replaced by an abstract class)
         // atmospheric temperature (kelvin)
         public const float Tatm = 300f;
         
@@ -45,23 +43,27 @@ public class Metal : MonoBehaviour
         private float _neq;
 
     // cinetic constants
-        // The speed of the reaction (second)
-        private float _deltaT;
+        // range of the evolution of cinetic
+        private const float Tmin = 250f;
+        private const float Tmax = 500f;
+        
+        // duration between two steps of the reaction (second)
+        private const float DeltaT = 0.2f;
 
-        // The time of last reaction
+        // The time of the last reaction
         private float _lastReaction = 0f;
 
         // Frac and Fracmin enable to compute the reaction progress
-        public const float Frac = 0.5f;
-        public const float Fracmin = 0.01f;
+        // prog is the percentage of progress at each step
+        private float _prog = 0.5f; // prog is the percentage of progress at each step
+        private const float Progmin = 0.3f;
+        private const float Progmax = 0.9f;
+        private const float Progatm = 0.5f;
+        private const float Rate_prog1 = (Progatm - Progmin)/(Tatm - Tmin);
+        private const float Rate_prog2 = (Progmax - Progatm)/(Tmax - Tatm);
 
-        // useful constants to update _deltaT
-        public const float Tmin = 240f;
-        public const float Tmax = 350f;
-        public const float DeltaTmin = 0.05f;
-        public const float DeltaTatm = 0.3f;
-        public const float Rate = (DeltaTatm - DeltaTmin)/(Tatm - Tmin);
-        public const float DeltaTmax = Rate*(Tmax - Tmin) +DeltaTmin;
+        public const float Fracmin = 0.01f; // Fracmin is the minimum part of _nm oxidised at each step 
+
     
     private void Awake() 
     {
@@ -98,24 +100,25 @@ public class Metal : MonoBehaviour
 
         // temp = Tatm
         _temp = Tatm;
-        _deltaT = DeltaTatm;
     }
 
-
-    public void UpdateDeltaT()
+    public void UpdateProg() 
     {
         if(_temp <= Tmin)
         {
-            _deltaT = DeltaTmin;
+            _prog = Progmin;
         }
-
+        else if (_temp <= Tatm)
+        {
+            _prog = Progmin + Rate_prog1*(_temp - Tmin);
+        }
         else if (_temp <= Tmax)
         {
-            _deltaT = Rate*(_temp - Tmin) +DeltaTmin;
+            _prog = Progatm + Rate_prog2*(_temp - Tatm);
         }
         else
         {
-            _deltaT = DeltaTmax;
+            _prog = Progmax;
         }
     }
 
@@ -169,10 +172,15 @@ public class Metal : MonoBehaviour
     }
 
     public void UpdateNox() {
+        // recording that a new reaction starts
         _lastReaction = Time.time;
-        // step is equivalent to the reaction progress
-        float step = Mathf.Max(Frac*(_neq - _nox), Fracmin*_nm);
-        _nox = Mathf.Min(_nox + step, _nm);
+        
+        // step is the reaction progress made at each time step
+        // Fracmin*_nm ensures that the reaction ends in a finite time
+        float step = Mathf.Max(_prog * ( _neq - _nox), Fracmin*_nm);
+        
+        // ensures that _nox <= eq
+        _nox = Mathf.Min(_nox + step, _neq);
     }
 
     public void UpdateNeq(float delta) {
@@ -182,7 +190,7 @@ public class Metal : MonoBehaviour
     public void UpdateMetal()
     {
         //if(Time.time >= lastReaction + _deltaT && s_a > 0)
-        if(Time.time >= _lastReaction + _deltaT && !this.EqReached())
+        if(Time.time >= _lastReaction + DeltaT && !this.EqReached())
         {
             // Debug.Log(lastReaction);
             // Trigger a reaction
@@ -202,7 +210,7 @@ public class Metal : MonoBehaviour
         return _nm;
     }
 
-    public float GetNeq()
+    public float GetNeq() 
     {
         return _neq;
     }
