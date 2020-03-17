@@ -124,40 +124,37 @@ public class Metal : MonoBehaviour
 
     public void UpdateTexture()
     {
-        if(!this.IsCompletelyCorroded())
+        //Get the Renderer component from the new cube
+        var cubeRenderer = visual;
+
+        //Get the proportion of the non-eroded atoms.
+        float prop = (float)_nox/_nm;
+        
+        //for prop = 1, the triplet (R, G, B) defines the color Dark Brown
+        float R = 1 - prop * (1.0f - 0.296f);
+        float G = 1 - prop * (1.0f - 0.163f);
+        float B = 1 - prop * (1.0f - 0.029f);
+
+        //Call SetColor using the shader property name "_Color" and setting the color to (R, G, B)
+        cubeRenderer.material.SetColor("_Color", new Color(R, G, B, prop/2));
+
+        //Random Draw that decides if the metal is destroyed or passivated.    
+        if(IsCompletelyCorroded())
         {
-            //Get the Renderer component from the new cube
-            var cubeRenderer = visual;
-
-            //Get the proportion of the non-eroded atoms.
-            float prop = (float)_nox/_nm;
-            
-            //for prop = 1, the triplet (R, G, B) defines the color Dark Brown
-            float R = 1 - prop * (1.0f - 0.296f);
-            float G = 1 - prop * (1.0f - 0.163f);
-            float B = 1 - prop * (1.0f - 0.029f);
-
-            //Call SetColor using the shader property name "_Color" and setting the color to (R, G, B)
-            cubeRenderer.material.SetColor("_Color", new Color(R, G, B, prop/2));
-
-            //Random Draw that decides if the metal is destroyed or passivated.    
-            if(_nox >= _nm)
+            //Uniform distribution
+            float p =  Random.Range(0.0f, 1.0f);
+            if(p <= p_solv)
             {
-                //Uniform distribution
-                float p =  Random.Range(0.0f, 1.0f);
-                if(p <= p_solv)
-                {
-                    // When destoryed it remove itself from the list of metals in Platform
-                    referenceScript.removeMetal(this.GetComponent<Metal>());
+                // When destoryed it remove itself from the list of metals in Platform
+                referenceScript.removeMetal(this.GetComponent<Metal>());
 
-                    // Removes the Mesh
-                    visual.enabled = false;
+                // Removes the Mesh
+                visual.enabled = false;
 
-                    // Destroys the game object
-                    Destroy(gameObject);
-                }
-            }   
-        }
+                // Destroys the game object
+                Destroy(gameObject);
+            }
+        }   
     }
 
 
