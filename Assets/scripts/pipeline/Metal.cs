@@ -37,7 +37,7 @@ public class Metal : MonoBehaviour
         public const float Tatm = 300f;
         
         // temperature (kelvin)
-        public float _temp ;
+        public float temp ;
 
         // amount of oxidised metal at thermodynamic balance (mole); <= _nm
         private float _neq;
@@ -99,22 +99,22 @@ public class Metal : MonoBehaviour
         _neq = 0f;
 
         // temp = Tatm
-        _temp = Tatm;
+        temp = Tatm;
     }
 
     public void UpdateProg() 
     {
-        if(_temp <= Tmin)
+        if(temp <= Tmin)
         {
             _prog = Progmin;
         }
-        else if (_temp <= Tatm)
+        else if (temp <= Tatm)
         {
-            _prog = Progmin + Rate_prog1*(_temp - Tmin);
+            _prog = Progmin + Rate_prog1*(temp - Tmin);
         }
-        else if (_temp <= Tmax)
+        else if (temp <= Tmax)
         {
-            _prog = Progatm + Rate_prog2*(_temp - Tatm);
+            _prog = Progatm + Rate_prog2*(temp - Tatm);
         }
         else
         {
@@ -189,7 +189,8 @@ public class Metal : MonoBehaviour
         //if(Time.time >= lastReaction + _deltaT && s_a > 0)
         if(Time.time >= _lastReaction + DeltaT && !this.EqReached())
         {
-            // Debug.Log(lastReaction);
+            UpdateProg();
+            
             // Trigger a reaction
             UpdateNox();
 

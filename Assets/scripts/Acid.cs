@@ -35,7 +35,7 @@ public class Acid : MonoBehaviour
 
 
     // Removing the acid that was absorbed by the metal
-    void Update_na(float used) {
+    void UpdateNa(float used) {
         _na = Mathf.Max(0, _na - used);
     }
 
@@ -76,7 +76,7 @@ public class Acid : MonoBehaviour
 
             float delta_na = Mathf.Min(nm - neq, Fracmax*_na_ini, _na);
 
-            Update_na(delta_na);
+            UpdateNa(delta_na);
             // triggering corroding updates
             M.UpdateNeq(delta_na);
             referenceScript.addMetal(M);
@@ -105,9 +105,12 @@ public class Acid : MonoBehaviour
             float neq = M.GetNeq();
             float nm = M.GetNm();
 
+            // computing the amount of acid that will be consumed
             float delta_na = Mathf.Min(nm - neq, Fracmax*_na_ini, _na);
 
-            Update_na(delta_na);
+            // updating the amount of acid of the projectile
+            UpdateNa(delta_na);
+            
             // triggering corroding updates
             M.UpdateNeq(delta_na);
             referenceScript.addMetal(M);
