@@ -37,7 +37,7 @@ public class Metal : MonoBehaviour
         public const float Tatm = 300f;
         
         // temperature (kelvin)
-        public float _temp ;
+        private float _temp ;
 
         // amount of oxidised metal at thermodynamic balance (mole); <= _nm
         private float _neq;
@@ -99,7 +99,7 @@ public class Metal : MonoBehaviour
         _neq = 0f;
 
         // temp = Tatm
-        _temp = Tatm;
+        _temp = this.GetComponent<ThermoBody>().GetT();
     }
 
     public void UpdateProg() 
@@ -184,12 +184,19 @@ public class Metal : MonoBehaviour
         _neq = Mathf.Min(_neq + delta, _nm);
     }
 
+    public void UpdateTemp() 
+    {
+        _temp = this.GetComponent<ThermoBody>().GetT();
+    }
+
     public void UpdateMetal()
     {
-        //if(Time.time >= lastReaction + _deltaT && s_a > 0)
         if(Time.time >= _lastReaction + DeltaT && !this.EqReached())
-        {
-            // Debug.Log(lastReaction);
+        {   
+            // Updating the cinetic according to temperature
+            UpdateTemp();
+            UpdateProg();
+            
             // Trigger a reaction
             UpdateNox();
 
