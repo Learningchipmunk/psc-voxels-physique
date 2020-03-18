@@ -59,15 +59,15 @@ public class Projectile : MonoBehaviour
         }
         if (Input.GetButtonDown("Fire2"))
         {
-            Vector3 spawnVector = spawnPoint.position;
-            Vector3 dirProj = spawnPoint.transform.position - fpsCam.transform.position;
+            Vector3 spawnVector = fpsCam.transform.position + 2*fpsCam.transform.forward;
+            Vector3 dirProj = 2*fpsCam.transform.forward;
             Rigidbody clone;
             Vector3 u = Vector3.Cross(dirProj, Vector3.up).normalized;
             Vector3 v = Vector3.Cross(dirProj, u).normalized;
             float angle = Mathf.PI * 2 * Random.value;
             float rayon = rayonCone * Random.value;
             Vector3 compCone = rayon * (Mathf.Cos(angle) * u + Mathf.Sin(angle) * v);
-            clone = Instantiate(projectile, spawnVector, spawnPoint.rotation);
+            clone = Instantiate(projectile, spawnVector, new Quaternion(0,0,0,0));
             clone.AddForce(bulletForce * (dirProj + compCone));
         }
 
@@ -89,8 +89,8 @@ public class Projectile : MonoBehaviour
     IEnumerator Fire1()
     {
         allowfire = false;
-        Vector3 spawnVector = spawnPoint.position;
-        Vector3 dirProj = spawnPoint.transform.position - fpsCam.transform.position;
+        Vector3 spawnVector = fpsCam.transform.position + 2*fpsCam.transform.forward;
+        Vector3 dirProj = 2*fpsCam.transform.forward;
         Rigidbody clone;
         Vector3 u = Vector3.Cross(dirProj, Vector3.up).normalized;
         Vector3 v = Vector3.Cross(dirProj, u).normalized;
