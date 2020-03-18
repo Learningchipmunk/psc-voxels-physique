@@ -48,4 +48,13 @@ public class ThermoBody : MonoBehaviour
     {
         return _T;
     }
+
+    public float Getc() 
+    {
+        return c;
+    }
+
+    public void ChangeT(float temp){
+        _T = temp;
+    }
 }

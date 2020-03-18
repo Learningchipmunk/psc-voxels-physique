@@ -5,27 +5,25 @@ using UnityEngine;
 public class Ice : MonoBehaviour
 {
     // temperature (kelvin)
-        public float _temp = 270;
+        public float _T = 270;
 
     // Specific heat capacities
 
-        private float _capterm_ice = 2060;
-        private float _capterm_met = 400;
-
-
+        private float c = 2;
 
     void OnCollisionEnter(Collision collisionInfo){
-        if(collisionInfo.collider.tag.Contains("Metal")){
-            Metal M = collisionInfo.gameObject.GetComponent<Metal>(); 
+
+        if(collisionInfo.collider.tag.Contains("Metal")){ 
             float massmet = collisionInfo.rigidbody.mass;
-            float newtemp = (gameObject.GetComponent<Rigidbody>().mass*_capterm_ice*_temp + massmet*_capterm_met*M._temp)/(gameObject.GetComponent<Rigidbody>().mass*_capterm_ice + massmet*_capterm_met);
-            Debug.Log(newtemp);
-            M._temp = newtemp;
-            _temp = newtemp;
+            float tempmet = collisionInfo.gameObject.GetComponent<ThermoBody>().GetT();
+            float cmet = collisionInfo.gameObject.GetComponent<ThermoBody>().Getc();
+            float newtemp = (gameObject.GetComponent<Rigidbody>().mass*c*_T + massmet*cmet*tempmet)/(gameObject.GetComponent<Rigidbody>().mass*c + massmet*cmet);
+            collisionInfo.gameObject.GetComponent<ThermoBody>().ChangeT(newtemp);
+            _T = newtemp;
         }
     }
 
     void FixedUpdate(){
-        if(_temp>273) Destroy(gameObject);
+        if(_T>273) Destroy(gameObject);
     }
 }
