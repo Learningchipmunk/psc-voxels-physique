@@ -37,7 +37,7 @@ public class Metal : MonoBehaviour
         public const float Tatm = 300f;
         
         // temperature (kelvin)
-        public float _temp ;
+        private float _temp ;
 
         // amount of oxidised metal at thermodynamic balance (mole); <= _nm
         private float _neq;

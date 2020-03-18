@@ -1,27 +1,50 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public Rigidbody projectile1;
-    public Rigidbody projectile2;
-    public Rigidbody ice;
-    public Transform spawnPoint;
-    public float bulletForce1;
-    public float bulletForce2;
-    public float bulletForceIce;
     public Camera fpsCam;
     public RectTransform target;
-    private float rayonCone = 0.2f;
-    private bool allowfire = true;
-    public float invertRate1 = 0f;
-    public float invertRate2 = 0f;
+    public Transform spawnPoint;
+    public Text ProjectileType;
+    public Text ProjectileChangeIndication;
+    private int projectilechose;
 
+
+    private Rigidbody projectile;
+    public Rigidbody acid;
+    public Rigidbody stone;
+    public Rigidbody ice;
+    
+
+    private float bulletForce;
+    public float bulletForceAcid;
+    public float bulletForceStone;
+    public float bulletForceIce;
+
+
+    
+    private float rayonCone = 0.16f;
+    private bool allowfire = true;
+
+    private float invertRate;
+    public float invertRateAcid = 0f;
+    public float invertRateStone = 1f;
     public float invertRateIce = 0f;
 
-    private int projectilechose = 1;
+    
 
+    void Awake(){
+        projectile = acid;
+        bulletForce = bulletForceAcid;
+        invertRate = invertRateAcid;
+        ProjectileType.text = "Projectile : Acide";
+        ProjectileChangeIndication.text = "Press 'a' to switch";
+        projectilechose = 1;
+
+    }
     void Update()
     {
         if (Input.GetMouseButton(0)&&(allowfire))
@@ -32,9 +55,7 @@ public class Projectile : MonoBehaviour
 
         if (Input.GetKeyDown("a"))
         {
-            if(projectilechose==1) projectilechose = 2;
-            else if(projectilechose==2) projectilechose = 3;
-            else projectilechose = 1;
+            ChangeProjectile();
         }
         if (Input.GetButtonDown("Fire2"))
         {
@@ -46,16 +67,8 @@ public class Projectile : MonoBehaviour
             float angle = Mathf.PI * 2 * Random.value;
             float rayon = rayonCone * Random.value;
             Vector3 compCone = rayon * (Mathf.Cos(angle) * u + Mathf.Sin(angle) * v);
-            if(projectilechose == 1){
-            clone = Instantiate(projectile1, spawnVector, spawnPoint.rotation);
-            clone.AddForce(bulletForce1 * (dirProj + compCone));}
-            else if(projectilechose == 2){
-            clone = Instantiate(projectile2, spawnVector, spawnPoint.rotation);
-            clone.AddForce(bulletForce2 * (dirProj + compCone));}
-            else{
-            clone = Instantiate(ice, spawnVector, spawnPoint.rotation);
-            clone.AddForce(bulletForceIce * (dirProj + compCone));}
-            
+            clone = Instantiate(projectile, spawnVector, spawnPoint.rotation);
+            clone.AddForce(bulletForce * (dirProj + compCone));
         }
 
 
@@ -64,10 +77,11 @@ public class Projectile : MonoBehaviour
             target.sizeDelta += new Vector2(10, 10);
             rayonCone += 0.02f;
         }
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if ((Input.GetAxis("Mouse ScrollWheel") > 0)&&(rayonCone > 0.001))
         {
             target.sizeDelta -= new Vector2(10, 10);
             rayonCone -= 0.02f;
+            Debug.Log(rayonCone);
         }
 
     }
@@ -83,22 +97,31 @@ public class Projectile : MonoBehaviour
         float angle = Mathf.PI * 2 * Random.value;
         float rayon = rayonCone * Random.value;
         Vector3 compCone = rayon * (Mathf.Cos(angle) * u + Mathf.Sin(angle) * v);
-        if(projectilechose == 1){
-        clone = Instantiate(projectile1, spawnVector, spawnPoint.rotation);
-        clone.AddForce(bulletForce1 * (dirProj + compCone));
-        yield return new WaitForSeconds(invertRate1);}
-
-        else if(projectilechose == 2){
-        clone = Instantiate(projectile2, spawnVector, spawnPoint.rotation);
-        clone.AddForce(bulletForce2 * (dirProj + compCone));
-        yield return new WaitForSeconds(invertRate2); }
-
-        else{
-        clone = Instantiate(ice, spawnVector, spawnPoint.rotation);
-        clone.AddForce(bulletForceIce * (dirProj + compCone));
-        yield return new WaitForSeconds(invertRateIce);
-        }
+        clone = Instantiate(projectile, spawnVector, spawnPoint.rotation);
+        clone.AddForce(bulletForce * (dirProj + compCone));
+        yield return new WaitForSeconds(invertRate);
         allowfire = true;
+    }
+
+    void ChangeProjectile(){
+        if(projectilechose==1){
+            projectile = stone;
+            bulletForce = bulletForceStone;
+            invertRate = invertRateStone;
+            ProjectileType.text = "Projectile : Stone";
+            projectilechose = 2;}
+        else if(projectilechose==2){
+            projectile = ice;
+            bulletForce = bulletForceIce;
+            invertRate = invertRateIce;
+            ProjectileType.text = "Projectile : Ice";
+            projectilechose = 3;}
+        else{
+            projectile = acid;
+            bulletForce = bulletForceAcid;
+            invertRate = invertRateAcid;
+            ProjectileType.text = "Projectile : Acid";
+            projectilechose = 1;}
     }
 
 }
