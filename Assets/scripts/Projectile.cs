@@ -6,15 +6,19 @@ public class Projectile : MonoBehaviour
 {
     public Rigidbody projectile1;
     public Rigidbody projectile2;
+    public Rigidbody ice;
     public Transform spawnPoint;
     public float bulletForce1;
     public float bulletForce2;
+    public float bulletForceIce;
     public Camera fpsCam;
     public RectTransform target;
     private float rayonCone = 0.2f;
     private bool allowfire = true;
     public float invertRate1 = 0f;
     public float invertRate2 = 0f;
+
+    public float invertRateIce = 0f;
 
     private int projectilechose = 1;
 
@@ -28,7 +32,9 @@ public class Projectile : MonoBehaviour
 
         if (Input.GetKeyDown("a"))
         {
-            projectilechose = - projectilechose + 3;
+            if(projectilechose==1) projectilechose = 2;
+            else if(projectilechose==2) projectilechose = 3;
+            else projectilechose = 1;
         }
         if (Input.GetButtonDown("Fire2"))
         {
@@ -43,10 +49,13 @@ public class Projectile : MonoBehaviour
             if(projectilechose == 1){
             clone = Instantiate(projectile1, spawnVector, spawnPoint.rotation);
             clone.AddForce(bulletForce1 * (dirProj + compCone));}
-            else{
+            else if(projectilechose == 2){
             clone = Instantiate(projectile2, spawnVector, spawnPoint.rotation);
-            clone.AddForce(bulletForce2 * (dirProj + compCone));    
-            }
+            clone.AddForce(bulletForce2 * (dirProj + compCone));}
+            else{
+            clone = Instantiate(ice, spawnVector, spawnPoint.rotation);
+            clone.AddForce(bulletForceIce * (dirProj + compCone));}
+            
         }
 
 
@@ -78,10 +87,17 @@ public class Projectile : MonoBehaviour
         clone = Instantiate(projectile1, spawnVector, spawnPoint.rotation);
         clone.AddForce(bulletForce1 * (dirProj + compCone));
         yield return new WaitForSeconds(invertRate1);}
-        else{
+
+        else if(projectilechose == 2){
         clone = Instantiate(projectile2, spawnVector, spawnPoint.rotation);
         clone.AddForce(bulletForce2 * (dirProj + compCone));
         yield return new WaitForSeconds(invertRate2); }
+
+        else{
+        clone = Instantiate(ice, spawnVector, spawnPoint.rotation);
+        clone.AddForce(bulletForceIce * (dirProj + compCone));
+        yield return new WaitForSeconds(invertRateIce);
+        }
         allowfire = true;
     }
 

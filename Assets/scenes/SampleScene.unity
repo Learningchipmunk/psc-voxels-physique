@@ -178,13 +178,16 @@ MonoBehaviour:
     type: 3}
   projectile2: {fileID: 7907969274891328493, guid: e533c179ac1e144409c686dcceaf82fb,
     type: 3}
+  ice: {fileID: 7527250170327275794, guid: fc8c7beef47d1ab4abfc5b8001fd179f, type: 3}
   spawnPoint: {fileID: 201701985}
   bulletForce1: 800
   bulletForce2: 10000
+  bulletForceIce: 20
   fpsCam: {fileID: 883644959}
   target: {fileID: 1326447810}
   invertRate1: 0
   invertRate2: 1
+  invertRateIce: 0
 --- !u!114 &102117
 MonoBehaviour:
   m_ObjectHideFlags: 0
