@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ice : MonoBehaviour
+public class Fire : MonoBehaviour
 {
-    // temperature (kelvin)
-    public float _T = 270;
-
-    // Specific heat capacities
-
-    private float c = 2;
-
+    public float energy = 100f;
+    
     private float _startingTime;
     //extinction time
     private float _extinctionTime = 8f;
 
     // Giving a random factor to time.
-    private float _p = 0.5f;    
+    private float _p = 0.5f;
+    
 
     void TimeCheck()
     {
@@ -38,22 +34,21 @@ public class Ice : MonoBehaviour
     void Start(){
         _startingTime = Time.time;
     }
-
     void OnCollisionEnter(Collision collisionInfo){
 
         if(collisionInfo.collider.tag.Contains("Metal")){ 
             float massmet = collisionInfo.rigidbody.mass;
             float tempmet = collisionInfo.gameObject.GetComponent<ThermoBody>().GetT();
             float cmet = collisionInfo.gameObject.GetComponent<ThermoBody>().Getc();
-            float newtemp = (gameObject.GetComponent<Rigidbody>().mass*c*_T + massmet*cmet*tempmet)/(gameObject.GetComponent<Rigidbody>().mass*c + massmet*cmet);
+            float newtemp = tempmet + (energy)/(massmet*cmet);
             collisionInfo.gameObject.GetComponent<ThermoBody>().ChangeT(newtemp);
-            _T = newtemp;
             Debug.Log(newtemp);
+            Destroy(gameObject);
         }
     }
 
-    void FixedUpdate(){
-        if(_T>273) Destroy(gameObject);
+    void FixedUpdate()
+    {
         TimeCheck();
     }
 }

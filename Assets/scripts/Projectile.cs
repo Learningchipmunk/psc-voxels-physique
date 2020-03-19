@@ -9,6 +9,8 @@ public class Projectile : MonoBehaviour
     public RectTransform target;
     public Transform spawnPoint;
     public Text ProjectileType;
+
+    public Slider FiringRate;
     public Text ProjectileChangeIndication;
     private int projectilechose;
 
@@ -17,46 +19,56 @@ public class Projectile : MonoBehaviour
     public Rigidbody acid;
     public Rigidbody stone;
     public Rigidbody ice;
+    public Rigidbody fire;
     
 
     private float bulletForce;
     public float bulletForceAcid;
     public float bulletForceStone;
     public float bulletForceIce;
+    public float bulletForceFire;
 
 
     
     private float rayonCone = 0.16f;
     private bool allowfire = true;
 
-    private float invertRate;
-    public float invertRateAcid = 0f;
-    public float invertRateStone = 1f;
-    public float invertRateIce = 0f;
+    private float invertRate = 0.5f;
 
-    
 
     void Awake(){
         projectile = acid;
         bulletForce = bulletForceAcid;
-        invertRate = invertRateAcid;
-        ProjectileType.text = "Projectile : Acide";
-        ProjectileChangeIndication.text = "Press 'a' to switch";
+        ProjectileType.text = "Projectile : Acid";
+        ProjectileChangeIndication.text = "'E' to switch";
+        FiringRate.value = 1-invertRate;
         projectilechose = 1;
 
     }
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetMouseButton(0)&&(allowfire))
         {
             StartCoroutine(Fire1());            
         }
 
-
-        if (Input.GetKeyDown("a"))
+        if (Input.GetKeyDown("e"))
         {
             ChangeProjectile();
         }
+
+        if (Input.GetKey("r")){
+            if(invertRate<0.999){
+            invertRate += 0.015f;
+            FiringRate.value = 1-invertRate;}
+        }
+
+        if (Input.GetKey("t")){
+            if(invertRate>0.001){
+            invertRate -= 0.015f;
+            FiringRate.value = 1-invertRate;}
+        }
+
         if (Input.GetButtonDown("Fire2"))
         {
             Vector3 spawnVector = fpsCam.transform.position + 2*fpsCam.transform.forward;
@@ -70,7 +82,6 @@ public class Projectile : MonoBehaviour
             clone = Instantiate(projectile, spawnVector, new Quaternion(0,0,0,0));
             clone.AddForce(bulletForce * (dirProj + compCone));
         }
-
 
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
@@ -107,21 +118,24 @@ public class Projectile : MonoBehaviour
         if(projectilechose==1){
             projectile = stone;
             bulletForce = bulletForceStone;
-            invertRate = invertRateStone;
             ProjectileType.text = "Projectile : Stone";
             projectilechose = 2;}
         else if(projectilechose==2){
+            projectile = fire;
+            bulletForce = bulletForceFire;
+            ProjectileType.text = "Projectile : Fire";
+            projectilechose = 3;}
+        else if(projectilechose==3){
             projectile = ice;
             bulletForce = bulletForceIce;
-            invertRate = invertRateIce;
             ProjectileType.text = "Projectile : Ice";
-            projectilechose = 3;}
+            projectilechose = 1;}
         else{
             projectile = acid;
             bulletForce = bulletForceAcid;
-            invertRate = invertRateAcid;
             ProjectileType.text = "Projectile : Acid";
             projectilechose = 1;}
+
     }
 
 }
