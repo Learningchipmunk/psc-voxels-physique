@@ -114,28 +114,35 @@ public class Projectile : MonoBehaviour
         allowfire = true;
     }
 
-    void ChangeProjectile(){
-        if(projectilechose==1){
-            projectile = stone;
-            bulletForce = bulletForceStone;
-            ProjectileType.text = "Projectile : Stone";
-            projectilechose = 2;}
-        else if(projectilechose==2){
-            projectile = fire;
-            bulletForce = bulletForceFire;
-            ProjectileType.text = "Projectile : Fire";
-            projectilechose = 3;}
-        else if(projectilechose==3){
-            projectile = ice;
-            bulletForce = bulletForceIce;
-            ProjectileType.text = "Projectile : Ice";
-            projectilechose = 1;}
-        else{
-            projectile = acid;
-            bulletForce = bulletForceAcid;
-            ProjectileType.text = "Projectile : Acid";
-            projectilechose = 1;}
-
+    void ChangeProjectile()
+	{
+		switch (projectilechose)
+		{
+			case 0:
+	            projectile = acid;
+				bulletForce = bulletForceAcid;
+				ProjectileType.text = "Projectile : Acid";
+				break;
+			case 1:
+			    projectile = stone;
+				bulletForce = bulletForceStone;
+				ProjectileType.text = "Projectile : Stone";
+				break;
+			case 2:
+				projectile = fire;
+				bulletForce = bulletForceFire;
+				ProjectileType.text = "Projectile : Fire";
+				break;
+			case 3:
+				projectile = ice;
+				bulletForce = bulletForceIce;
+				ProjectileType.text = "Projectile : Ice";
+				break;
+			default:
+				Debug.Log("Default case, error !");
+				break;
+		}
+		projectilechose = (projectilechose + 1) % 4;
     }
 
 }
