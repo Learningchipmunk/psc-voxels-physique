@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class Ice : MonoBehaviour
 {
+    // Thermal properties of a voxel
+    private ThermoBody _thermals;
+
+    // Rigidbody stored in a variable
+    private Rigidbody _body;
+
+
+
     // temperature (kelvin)
-    public float _T = 270;
+    public float T = 270;
 
     // Specific heat capacities
 
-    private float c = 2;
+    private float _c = 2;
 
     private float _startingTime;
     //extinction time
@@ -36,24 +44,42 @@ public class Ice : MonoBehaviour
     }
 
     void Start(){
+        
+        // Getting the thermal properties of the voxel
+        _thermals = GetComponent<ThermoBody>();
+
+        // Getting the Rigidbody
+        _body = GetComponent<Rigidbody>();
+
+
         _startingTime = Time.time;
     }
 
     void OnCollisionEnter(Collision collisionInfo){
 
-        if(collisionInfo.collider.tag.Contains("Metal")){ 
+        if(collisionInfo.collider.tag.Contains("Metal"))
+        { 
             float massmet = collisionInfo.rigidbody.mass;
-            float tempmet = collisionInfo.gameObject.GetComponent<ThermoBody>().GetT();
-            float cmet = collisionInfo.gameObject.GetComponent<ThermoBody>().Getc();
-            float newtemp = (gameObject.GetComponent<Rigidbody>().mass*c*_T + massmet*cmet*tempmet)/(gameObject.GetComponent<Rigidbody>().mass*c + massmet*cmet);
-            collisionInfo.gameObject.GetComponent<ThermoBody>().ChangeT(newtemp);
-            _T = newtemp;
-            Debug.Log(newtemp);
+
+            // We only get the thermBody once to reduce the computation time
+            ThermoBody collisionThermoBody = collisionInfo.gameObject.GetComponent<ThermoBody>();
+            float tempmet = collisionThermoBody.GetT();
+            float cmet = collisionThermoBody.Getc();
+
+            // We compute the new temp after the collision with a simple thermodynamics equation : C1 * T1 + C2 * T2 = (C1+C2) * T  
+            float newtemp = (_body.mass*_c*T + massmet*cmet*tempmet)/(_body.mass*_c + massmet*cmet);
+
+            // We then change the temp of the voxel :
+            _thermals.ChangeT(newtemp);
+            T = newtemp;
+            
+            // To slow, TO DO : find bettter constants (Ronan)
+            // Debug.Log(newtemp);
         }
     }
 
     void FixedUpdate(){
-        if(_T>273) Destroy(gameObject);
+        if(T>273) Destroy(gameObject);
         TimeCheck();
     }
 }

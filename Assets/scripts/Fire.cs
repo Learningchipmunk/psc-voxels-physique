@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Fire : MonoBehaviour
 {
+
     public float energy = 100f;
     
     private float _startingTime;
@@ -31,18 +32,27 @@ public class Fire : MonoBehaviour
         }
     }
 
-    void Start(){
+    void Start()
+    {
         _startingTime = Time.time;
     }
     void OnCollisionEnter(Collision collisionInfo){
 
-        if(collisionInfo.collider.tag.Contains("Metal")){ 
+        if(collisionInfo.collider.tag.Contains("Metal"))
+        { 
+            // We only get the thermBody once to reduce the computation time
+            ThermoBody collisionThermoBody = collisionInfo.gameObject.GetComponent<ThermoBody>();
+
             float massmet = collisionInfo.rigidbody.mass;
-            float tempmet = collisionInfo.gameObject.GetComponent<ThermoBody>().GetT();
-            float cmet = collisionInfo.gameObject.GetComponent<ThermoBody>().Getc();
+            float tempmet = collisionThermoBody.GetT();
+            float cmet = collisionThermoBody.Getc();
             float newtemp = tempmet + (energy)/(massmet*cmet);
-            collisionInfo.gameObject.GetComponent<ThermoBody>().ChangeT(newtemp);
-            Debug.Log(newtemp);
+            collisionThermoBody.ChangeT(newtemp);
+            
+            
+            //Debug.Log(newtemp);
+            
+            // Destroys the fire on impact !
             Destroy(gameObject);
         }
     }

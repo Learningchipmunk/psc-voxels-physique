@@ -5,7 +5,7 @@ using UnityEngine;
 public class ThermoBody : MonoBehaviour
 {
     // Temperature (Kelvin)
-    private float _T;
+    public float T;
 
     // Temperature of the atmosphere (Kelvin)
     public float Tatm = 300f;
@@ -35,7 +35,7 @@ public class ThermoBody : MonoBehaviour
         _d = k / (c*rho);
         
         // initially everything temperature is equal to Tatm
-        _T = Tatm;
+        T = Tatm;
     }
 
     // Update is called once per frame
@@ -46,7 +46,7 @@ public class ThermoBody : MonoBehaviour
 
     public float GetT() 
     {
-        return _T;
+        return T;
     }
 
     public float Getc() 
@@ -55,6 +55,6 @@ public class ThermoBody : MonoBehaviour
     }
 
     public void ChangeT(float temp){
-        _T = temp;
+        T = temp;
     }
 }

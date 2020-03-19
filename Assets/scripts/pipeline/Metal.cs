@@ -11,9 +11,14 @@ public class Metal : MonoBehaviour
     // Stores the Script Ref of Voxel
     Voxel referenceVoxel;
 
-    private MeshRenderer visual;
 
-    //Probability of being a solvant
+    // _visual
+    private MeshRenderer _visual;
+
+    // Thermal properties of a voxel
+    private ThermoBody _thermals;
+
+    // Probability of being a solvant
     public float p_solv = 0.5f;
 
     // chemical caracteristics
@@ -68,15 +73,18 @@ public class Metal : MonoBehaviour
     private void Awake() 
     {
         // Getting the meshrenderer of this gameobject
-        visual = this.GetComponent<MeshRenderer>();
-        // name = "Iron";
+        _visual = this.GetComponent<MeshRenderer>();
+        
+        
+        // Getting the thermal properties of the voxel
+        _thermals = GetComponent<ThermoBody>();
 
         // tagging the metal
         tag = "Metal";
         
         // loading textures in C# file
         Material Iron = Resources.Load("Iron", typeof(Material)) as Material;
-        visual.material = Iron;
+        _visual.material = Iron;
     }
 
     void Start()
@@ -99,7 +107,7 @@ public class Metal : MonoBehaviour
         _neq = 0f;
 
         // temp = Tatm
-        _temp = this.GetComponent<ThermoBody>().GetT();
+        _temp = _thermals.GetT();
     }
 
     public void UpdateProg() 
@@ -125,7 +133,7 @@ public class Metal : MonoBehaviour
     public void UpdateTexture()
     {
         //Get the Renderer component from the new cube
-        var cubeRenderer = visual;
+        var cubeRenderer = _visual;
 
         //Get the proportion of the non-eroded atoms.
         float prop = (float)_nox/_nm;
@@ -149,7 +157,7 @@ public class Metal : MonoBehaviour
                 referenceScript.removeMetal(this.GetComponent<Metal>());
 
                 // Removes the Mesh
-                visual.enabled = false;
+                _visual.enabled = false;
 
                 // Destroys the game object
                 Destroy(gameObject);
@@ -159,13 +167,14 @@ public class Metal : MonoBehaviour
 
 
     public void UpdateDistance()
-    {
-        this.referenceVoxel.breakingDistanceCoef = (_nox * (distanceOxCoef - distanceInitialCoef) + (_nm - _nox) * distanceInitialCoef) / _nm;
+    {// Ronan ne change plus cette équation stp, (distanceOxCoef - distanceInitialCoef) est faux ça donne des résultats négatifs !
+        this.referenceVoxel.breakingDistanceCoef = (_nox * distanceOxCoef + (_nm - _nox) * distanceInitialCoef) / _nm;
     }
 
     public void UpdateRaideur()
     {
-        this.referenceVoxel.k = (_nox * (raideurOx - raideurInitial) + (_nm - _nox) * raideurInitial) / _nm;
+        this.referenceVoxel.k = (_nox * raideurOx + (_nm - _nox) * raideurInitial) / _nm;
+        Debug.Log(referenceVoxel.k);
     }
 
     public void UpdateNox() {
