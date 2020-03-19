@@ -174,7 +174,6 @@ public class Metal : MonoBehaviour
     public void UpdateRaideur()
     {
         this.referenceVoxel.k = (_nox * raideurOx + (_nm - _nox) * raideurInitial) / _nm;
-        Debug.Log(referenceVoxel.k);
     }
 
     public void UpdateNox() {
@@ -195,7 +194,7 @@ public class Metal : MonoBehaviour
 
     public void UpdateTemp() 
     {
-        _temp = this.GetComponent<ThermoBody>().GetT();
+        _temp = _thermals.GetT();
     }
 
     public void UpdateMetal()

@@ -50,6 +50,9 @@ public class Fire : MonoBehaviour
             collisionThermoBody.ChangeT(newtemp);
             
             
+            // Propagates the temp to other voxels :
+            collisionThermoBody.Propagation();
+
             //Debug.Log(newtemp);
             
             // Destroys the fire on impact !

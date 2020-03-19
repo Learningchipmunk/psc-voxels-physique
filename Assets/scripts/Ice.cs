@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Ice : MonoBehaviour
 {
-    // Thermal properties of a voxel
-    private ThermoBody _thermals;
 
     // Rigidbody stored in a variable
     private Rigidbody _body;
@@ -43,13 +41,12 @@ public class Ice : MonoBehaviour
         }
     }
 
-    void Start(){
+    void Awake()
+    {
         
-        // Getting the thermal properties of the voxel
-        _thermals = GetComponent<ThermoBody>();
 
         // Getting the Rigidbody
-        _body = GetComponent<Rigidbody>();
+        _body = gameObject.GetComponent<Rigidbody>();
 
 
         _startingTime = Time.time;
@@ -70,8 +67,11 @@ public class Ice : MonoBehaviour
             float newtemp = (_body.mass*_c*T + massmet*cmet*tempmet)/(_body.mass*_c + massmet*cmet);
 
             // We then change the temp of the voxel :
-            _thermals.ChangeT(newtemp);
+            collisionThermoBody.ChangeT(newtemp);
             T = newtemp;
+
+            // Propagates the temp to other voxels :
+            collisionThermoBody.Propagation();
             
             // To slow, TO DO : find bettter constants (Ronan)
             // Debug.Log(newtemp);
