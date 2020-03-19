@@ -45,7 +45,7 @@ public class ThermoBody : MonoBehaviour
 
         Tnew = 0;
 
-        // Distance between voxels is the size of the voxel divided by 2(we assume that if they are neighbors, they are colliding
+        // Distance between voxels is the size of the voxel(we assume that if they are neighbors, they are colliding
         // Therefore deltaX depends on the dimension of the Voxel        
         float deltaX = transform.localScale.x ;
         float deltaY = transform.localScale.y;
