@@ -166,16 +166,20 @@ public class ThermoBody : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(Time.time >= _lastReaction + _deltaT)
+        // Performance optimizer, does not compute for all metals !
+        if((T > 300.1f && T > 299.9f) && (Tnew > 300.1f && Tnew > 299.9f))
         {
-            UpdateT();
-            _lastReaction = Time.time;
+            if(Time.time >= _lastReaction + _deltaT)
+            {
+                UpdateT();
+                _lastReaction = Time.time;
+            }
+            
+            // Ensures that _delta is bigger than the frame rate !
+            _deltaT = Mathf.Max(Time.deltaTime, 0.15f);
+            
+            Debug.Log(_deltaT);
         }
-		
-		// Ensures that _delta is bigger than the frame rate !
-		_deltaT = Mathf.Max(Time.deltaTime, 0.15f);
-		
-		Debug.Log(_deltaT);
     }
 
     public float GetT() 
