@@ -15,7 +15,7 @@ public class ThermoBody : MonoBehaviour
     public float Tatm = 300f;
 
     // Time in between each heat exchange
-    private const float _deltaT = 0.15f;
+    private float _deltaT = 0.15f;
 
     // The time of the last heat exchange
     private float _lastReaction = 0f;
@@ -171,6 +171,11 @@ public class ThermoBody : MonoBehaviour
             UpdateT();
             _lastReaction = Time.time;
         }
+		
+		// Ensures that _delta is bigger than the frame rate !
+		_deltaT = Mathf.Max(Time.deltaTime, 0.15f);
+		
+		Debug.Log(_deltaT);
     }
 
     public float GetT() 
