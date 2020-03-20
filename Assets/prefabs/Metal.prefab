@@ -149,7 +149,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p_solv: 0.5
   c_m: 500
-  _temp: 300
 --- !u!114 &972228506921558913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69dbd0cc8ba9d0048b8a5175bf160a88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  T: 0
+  Tnew: 0
   Tatm: 300
   k: 20
   c: 1
