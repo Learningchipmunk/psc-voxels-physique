@@ -20,6 +20,9 @@ public class ThermoBody : MonoBehaviour
     // The time of the last heat exchange
     private float _lastReaction = 0f;
 
+    // Neighbors of the voxel :
+    GameObject [] neighbors;
+
 
     // characteristics of the material
         
@@ -52,8 +55,7 @@ public class ThermoBody : MonoBehaviour
         float deltaZ = transform.localScale.z;
 
 
-        GameObject [] neighbors = gameObject.GetComponent<Voxel>().voxelNeighbors;
-
+       
         int i = 0; // (+x,-x, +y, -y, +z, -z) 
 
         foreach (GameObject neigh in neighbors) 
@@ -110,9 +112,9 @@ public class ThermoBody : MonoBehaviour
             GameObject vertex = (GameObject)queue.Dequeue();
             
             // We get the neighbors of the current visited  Voxel vertex
-            GameObject [] neighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
+            GameObject [] vNeighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
 
-            foreach (GameObject neigh in neighbors) 
+            foreach (GameObject neigh in vNeighbors) 
             {
 
                 // If we find an unvisited vertex we compute the new Temp, mark it and add it to the queue
@@ -161,6 +163,9 @@ public class ThermoBody : MonoBehaviour
         // initially everything temperature is equal to Tatm
         T = Tatm;
         Tnew = Tatm;
+
+        // We get the neighbors of the current visited  Voxel
+        neighbors = gameObject.GetComponent<Voxel>().voxelNeighbors;
     }
 
     // Update is called once per frame
@@ -168,7 +173,7 @@ public class ThermoBody : MonoBehaviour
     {
         // Performance optimizer, does not compute for all metals !
         if((T > 300.1f && T > 299.9f) && (Tnew > 300.1f && Tnew > 299.9f))
-        {
+        {// Ice mat must change temp > 0.2 K otherwise no update will be done...
             if(Time.time >= _lastReaction + _deltaT)
             {
                 UpdateT();
