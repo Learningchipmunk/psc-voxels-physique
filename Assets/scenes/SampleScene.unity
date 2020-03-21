@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -179,11 +179,11 @@ MonoBehaviour:
   ProjectileType: {fileID: 1256658963}
   FiringRate: {fileID: 304591630}
   ProjectileChangeIndication: {fileID: 2134548225}
-  acid: {fileID: 7907969274891328493, guid: 6fc0a615a18615c4db489e79dd4afc30, type: 3}
+  acid: {fileID: 7907969274891328493, guid: 0ff04bf05e5b4fa4f9de6fcf98776811, type: 3}
   stone: {fileID: 7907969274891328493, guid: e533c179ac1e144409c686dcceaf82fb, type: 3}
   ice: {fileID: 7527250170327275794, guid: fc8c7beef47d1ab4abfc5b8001fd179f, type: 3}
   fire: {fileID: 1527320445486016205, guid: deec3d5fafa93ab4a90417656dce5c9b, type: 3}
-  bulletForceAcid: 800
+  bulletForceAcid: 8
   bulletForceStone: 10000
   bulletForceIce: 30
   bulletForceFire: 1
