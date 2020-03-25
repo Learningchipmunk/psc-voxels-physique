@@ -32,6 +32,12 @@ public class ThermoBody : MonoBehaviour
         // specific heat capacity
         public float c = 1;
 
+        // standard isobaric molar heat capacity (for thermochemical purpose)
+        public float cp0m;
+
+        //standard reaction enthalpy (assuming Ellingham's approximation)
+        public float delta_r_H0;
+
         // density
         public float rho = 1; // when Paul's modelisation is ready, it will be possible to compute the mass of the object thanks to rho
         
