@@ -13,16 +13,16 @@ public class Acid : MonoBehaviour
     // To store the MeshRenderer and change the color of the acid
     private MeshRenderer visual;
 
+
+
     // chemical constants
         // acid concentration (mole per cubic meter)
         public float c_ini = 10000.0f;
 
         // acid amount (mole) : initialised with C_ini
         private float _na_ini;
-        private float _na;
+        public float _na;
         
-        // maximum fraction of acid transferred
-        public  const float Fracmax = 0.4f;
 
     // acid deleting constants
         // Creating a timer to destroy the acid after 5 seconds of creation.
@@ -36,6 +36,7 @@ public class Acid : MonoBehaviour
 
     // Removing the acid that was absorbed by the metal
     void UpdateNa(float used) {
+        Debug.Log(_na - Mathf.Max(0, _na - used));
         _na = Mathf.Max(0, _na - used);
     }
 
@@ -74,7 +75,7 @@ public class Acid : MonoBehaviour
             float neq = M.GetNeq();
             float nm = M.GetNm();
 
-            float delta_na = Mathf.Min(nm - neq, Fracmax*_na_ini, _na);
+            float delta_na = Mathf.Min(nm - neq, _na);
 
             UpdateNa(delta_na);
             // triggering corroding updates
@@ -84,6 +85,9 @@ public class Acid : MonoBehaviour
             if(_na == 0)
             {
                 visual.enabled = false;
+                
+                // ------------- Insert animation here ----------------- //
+
                 Destroy(gameObject);
             }
             
@@ -106,7 +110,7 @@ public class Acid : MonoBehaviour
             float nm = M.GetNm();
 
             // computing the amount of acid that will be consumed
-            float delta_na = Mathf.Min(nm - neq, Fracmax*_na_ini, _na);
+            float delta_na = Mathf.Min(nm - neq, _na);
 
             // updating the amount of acid of the projectile
             UpdateNa(delta_na);
@@ -121,6 +125,8 @@ public class Acid : MonoBehaviour
                 visual.enabled = false;
                 Destroy(gameObject);
             }
+
+
         }
     }
 

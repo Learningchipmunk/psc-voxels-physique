@@ -182,8 +182,6 @@ public class ThermoBody : MonoBehaviour
             
             // Ensures that _delta is bigger than the frame rate !
             _deltaT = Mathf.Max(Time.deltaTime, 0.15f);
-            
-            Debug.Log(_deltaT);
         }
     }
 
