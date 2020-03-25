@@ -21,7 +21,7 @@ public class Acid : MonoBehaviour
 
         // acid amount (mole) : initialised with C_ini
         private float _na_ini;
-        public float _na;
+        private float _na;
         
 
     // acid deleting constants
