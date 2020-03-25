@@ -19,8 +19,6 @@ public class Metal : MonoBehaviour
     private ThermoBody _thermals;
 
     //metal specific thermal a/o thermochemical properties
-    _thermals.cp0m = 25.1;
-    _thermals.delta_r_H0 = -111.2; //the minus is a caracteristic for an exothermic reaction
 
     // Probability of being a solvant
     public float p_solv = 0.5f;
