@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1648826676084987065}
   - component: {fileID: 5829771078007004755}
   - component: {fileID: 972228506921558913}
+  - component: {fileID: 870869792363189023}
   m_Layer: 0
   m_Name: Metal
   m_TagString: obstacle
@@ -167,3 +168,15 @@ MonoBehaviour:
   k: 20
   c: 1
   rho: 1
+--- !u!114 &870869792363189023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847465864585416423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c72bba81edd96554d8bb884d1c38b118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

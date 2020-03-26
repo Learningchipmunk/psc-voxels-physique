@@ -60,10 +60,10 @@ public class Metal : MonoBehaviour
 
         // Frac and Fracmin enable to compute the reaction progress
         // prog is the percentage of progress at each step
-        private float _prog = 0.5f; // prog is the percentage of progress at each step
-        private const float Progmin = 0.3f;
-        private const float Progmax = 0.9f;
-        private const float Progatm = 0.5f;
+        private float _prog; // prog is the percentage of progress at each step
+        private const float Progmin = 0.05f;
+        private const float Progmax = 0.95f;
+        private const float Progatm = 0.4f;
         private const float Rate_prog1 = (Progatm - Progmin)/(Tatm - Tmin);
         private const float Rate_prog2 = (Progmax - Progatm)/(Tmax - Tatm);
 
@@ -108,6 +108,9 @@ public class Metal : MonoBehaviour
 
         // temp = Tatm
         _temp = _thermals.GetT();
+
+        // initialising prog
+        UpdateProg();
     }
 
     public void UpdateProg() 

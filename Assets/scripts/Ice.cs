@@ -13,9 +13,9 @@ public class Ice : MonoBehaviour
     // temperature (kelvin)
     public float T = 270;
 
-    // Specific heat capacities
+    // Specific heat capacities ( kJ/(K*kg) )
 
-    private float _c = 2;
+    private float _c = 4f;
 
     private float _startingTime;
     //extinction time
