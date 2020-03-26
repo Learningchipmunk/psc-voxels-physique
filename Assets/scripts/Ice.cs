@@ -14,7 +14,6 @@ public class Ice : MonoBehaviour
     public float T = 270;
 
     // Specific heat capacities ( kJ/(K*kg) )
-
     private float _c = 4f;
 
     private float _startingTime;
