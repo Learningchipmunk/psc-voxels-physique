@@ -15,6 +15,10 @@ public class Thermo_Features : MonoBehaviour
 
     public float Cboost = 1f;
 
+    public float GetC() {
+        return C * Cboost;
+    }
+
     // thermal diffusivity
     public const float D = 0.00001f;
 
@@ -22,10 +26,6 @@ public class Thermo_Features : MonoBehaviour
 
     public float GetD() {
         return D*Dboost;
-    }
-
-    public float GetC() {
-        return C*Cboost;
     }
 
 }

@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c72bba81edd96554d8bb884d1c38b118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tatm: 300
+  Tatm: 500
   deltaT: 0.15
   Cboost: 1
   Dboost: 10
@@ -193,3 +193,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d010a37cfd47fa9429166e3b0450c9b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  C_mboost: 0.005
+  p_solv: 0.5
+  raideurInitial: 1000
+  raideurOx: 900
+  distanceInitialCoef: 1.25
+  distanceOxCoef: 1.1
+  T1: 250
+  T2: 300
+  T3: 500
+  P1: 0.01
+  P2: 0.4
+  P3: 0.95
+  DeltaT: 0.2
+  Fracmin: 0.001
