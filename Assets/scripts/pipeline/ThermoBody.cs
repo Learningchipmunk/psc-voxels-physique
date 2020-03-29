@@ -8,14 +8,7 @@ public class ThermoBody : MonoBehaviour
     public float T;
 
     // Temperature à t+1 (Kelvin)
-    public float Tnew;
-
-
-    // Temperature of the atmosphere (Kelvin)
-    public float Tatm = 300f;
-
-    // Time in between each heat exchange
-    private float _deltaT = 0.15f;
+    public float Tnew;    
 
     // The time of the last heat exchange
     private float _lastReaction = 0f;
@@ -26,14 +19,14 @@ public class ThermoBody : MonoBehaviour
 
     // characteristics of the material
         
-        // Thermal conductivity
-        public float k = 20;
+        // Temperature of the atmosphere (Kelvin)
+        private float _Tatm;
+        
+        // Time in between each heat exchange
+        private float _deltaT;
 
         // specific heat capacity
-        public float c = 1;
-
-        // density
-        public float rho = 1; // when Paul's modelisation is ready, it will be possible to compute the mass of the object thanks to rho
+        private float _c;
         
         // Thermal diffusivity (square meter by second)
         private float _d;
@@ -66,7 +59,7 @@ public class ThermoBody : MonoBehaviour
             // If he has no neighbor on a certain direction, we consider him neighboring a voxel with T = Tatm
             if (neigh == null) 
             {
-                tempNeigh = Tatm;
+                tempNeigh = _Tatm;
             }
             else
             {
@@ -155,14 +148,16 @@ public class ThermoBody : MonoBehaviour
 
     void Start()
     {
-        _d = k / (c*rho);
+        Thermo_Features tf = GetComponent<Thermo_Features>();
 
-        // Augmentation de Rho pour l'équation de la chaleur, normalement les coef de diffusion thermique en m^2/s est du 10^-5 
-        _d /= 1000; // à enlever quand c'est reglé
+        _d = tf.GetD();
+        _deltaT = tf.deltaT;
+        _Tatm = tf.Tatm;
+        _c = tf.GetC();
         
         // initially everything temperature is equal to Tatm
-        T = Tatm;
-        Tnew = Tatm;
+        T = _Tatm;
+        Tnew = _Tatm;
 
         // We get the neighbors of the current visited  Voxel
         neighbors = gameObject.GetComponent<Voxel>().voxelNeighbors;
@@ -192,7 +187,7 @@ public class ThermoBody : MonoBehaviour
 
     public float Getc() 
     {
-        return c;
+        return _c;
     }
 
     public void ChangeT(float temp){
