@@ -34,14 +34,14 @@ public class Metal : MonoBehaviour
         private float _nox;
 
     // mecanical constants
-        public const float raideurInitial = 1000f;
-        public const float raideurOx = 900f;    
-        public const float distanceInitialCoef = 1.25f;
-        public const float distanceOxCoef = 1.1f;
+        private float raideurInitial;
+        private float raideurOx;    
+        private float distanceInitialCoef;
+        private float distanceOxCoef;
 
     // thermodynamic constants (some will be replaced by an abstract class)
         // atmospheric temperature (kelvin)
-        public const float Tatm = 300f;
+        
         
         // temperature (kelvin)
         private float _temp ;
@@ -51,25 +51,26 @@ public class Metal : MonoBehaviour
 
     // cinetic constants
         // range of the evolution of cinetic
-        private const float Tmin = 250f;
-        private const float Tmax = 500f;
+        private float _T1;
+        private float _T2;
+        private float _T3;
         
         // duration between two steps of the reaction (second)
-        private const float DeltaT = 0.2f;
+        private float _DeltaT;
 
         // The time of the last reaction
         private float _lastReaction = 0f;
 
         // Frac and Fracmin enable to compute the reaction progress
         // prog is the percentage of progress at each step
-        private float _prog = 0.5f; // prog is the percentage of progress at each step
-        private const float Progmin = 0.3f;
-        private const float Progmax = 0.9f;
-        private const float Progatm = 0.5f;
-        private const float Rate_prog1 = (Progatm - Progmin)/(Tatm - Tmin);
-        private const float Rate_prog2 = (Progmax - Progatm)/(Tmax - Tatm);
+        private float _prog; // prog is the percentage of progress at each step
+        private float _P1;
+        private float _P2;
+        private float _P3;
+        private float _R1;
+        private float _R2;
 
-        public const float Fracmin = 0.01f; // Fracmin is the minimum part of _nm oxidised at each step 
+        private float Fracmin; // Fracmin is the minimum part of _nm oxidised at each step 
 
     
     private void Awake() 
@@ -98,6 +99,29 @@ public class Metal : MonoBehaviour
         // To find the platform that stores the lists of metals
         referenceScript = GameObject.FindWithTag("Platform").GetComponent<MetalUpdater>();
         
+        Metal_Features mf = GetComponent<Metal_Features>();
+        
+        c_m = mf.GetC_m();
+        p_solv = mf.p_solv;
+        Fracmin = mf.Fracmin;
+        _DeltaT = mf.DeltaT;
+
+        raideurInitial = mf.raideurInitial;
+        raideurOx = mf.raideurOx;
+        distanceInitialCoef = mf.distanceInitialCoef;
+        distanceOxCoef = mf.distanceOxCoef;
+
+        
+        _P1 = mf.P1;
+        _P2 = mf.P2;
+        _P3 = mf.P3;
+        _T1 = mf.T1;
+        _T2 = mf.T2;
+        _T3 = mf.T3;
+        
+        _R1 = (_P2 - _P1)/(_T2 - _T1);
+        _R2 = (_P3 - _P2)/(_T3 - _T2);
+
         // volume (cubic meter) and amount of metal
         float v = this.transform.localScale.x * this.transform.localScale.y * this.transform.localScale.z ;
         _nm = c_m*v;
@@ -110,25 +134,28 @@ public class Metal : MonoBehaviour
 
         // temp = Tatm
         _temp = _thermals.GetT();
+
+        // initialising prog
+        UpdateProg();
     }
 
     public void UpdateProg() 
     {
-        if(_temp <= Tmin)
+        if(_temp <= _T1)
         {
-            _prog = Progmin;
+            _prog = _P1;
         }
-        else if (_temp <= Tatm)
+        else if (_temp <= _T2)
         {
-            _prog = Progmin + Rate_prog1*(_temp - Tmin);
+            _prog = _P1 + _R1*(_temp - _T1);
         }
-        else if (_temp <= Tmax)
+        else if (_temp <= _T3)
         {
-            _prog = Progatm + Rate_prog2*(_temp - Tatm);
+            _prog = _P2 + _R2*(_temp - _T2);
         }
         else
         {
-            _prog = Progmax;
+            _prog = _P3;
         }
     }
 
@@ -204,7 +231,7 @@ public class Metal : MonoBehaviour
 
     public void UpdateMetal()
     {
-        if(Time.time >= _lastReaction + DeltaT && !this.EqReached())
+        if(Time.time >= _lastReaction + _DeltaT && !this.EqReached())
         {   
             // Updating the cinetic according to temperature
             UpdateTemp();
