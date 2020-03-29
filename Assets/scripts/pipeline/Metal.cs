@@ -18,6 +18,8 @@ public class Metal : MonoBehaviour
     // Thermal properties of a voxel
     private ThermoBody _thermals;
 
+    //metal specific thermal a/o thermochemical properties
+
     // Probability of being a solvant
     public float p_solv = 0.5f;
 
@@ -213,6 +215,9 @@ public class Metal : MonoBehaviour
         
         // ensures that _nox <= eq
         _nox = Mathf.Min(_nox + step, _neq);
+
+        //thermochemical consequence : heat release onto the voxel
+        _thermals.ChangeT(_thermals.GetT() - (step / _nm)*(_thermals.delta_r_H0 / _thermals.cp0m));
     }
 
     public void UpdateNeq(float delta) {

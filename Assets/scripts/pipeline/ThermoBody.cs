@@ -28,6 +28,13 @@ public class ThermoBody : MonoBehaviour
         // specific heat capacity
         private float _c;
         
+        // standard isobaric molar heat capacity (for thermochemical purpose)
+        public float cp0m = 25.1f;
+
+        //standard reaction enthalpy (assuming Ellingham's approximation)
+        public float delta_r_H0 = -111200; //the minus is a caracteristic for an exothermic reaction
+
+        
         // Thermal diffusivity (square meter by second)
         private float _d;
     
