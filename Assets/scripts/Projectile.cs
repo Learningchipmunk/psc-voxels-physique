@@ -92,7 +92,6 @@ public class Projectile : MonoBehaviour
         {
             target.sizeDelta -= new Vector2(10, 10);
             rayonCone -= 0.02f;
-            Debug.Log(rayonCone);
         }
 
     }
