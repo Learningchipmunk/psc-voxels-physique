@@ -181,6 +181,7 @@ MonoBehaviour:
   deltaT: 0.15
   Cboost: 1
   Dboost: 10
+  deltar_Hboost: 5
 --- !u!114 &8089874465361210517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d010a37cfd47fa9429166e3b0450c9b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rho: 10000
   C_mboost: 0.005
   p_solv: 0.5
   raideurInitial: 1000

@@ -27,12 +27,9 @@ public class ThermoBody : MonoBehaviour
 
         // specific heat capacity
         private float _c;
-        
-        // standard isobaric molar heat capacity (for thermochemical purpose)
-        public float cp0m = 25.1f;
 
-        //standard reaction enthalpy (assuming Ellingham's approximation)
-        public float delta_r_H0 = -111200; //the minus is a caracteristic for an exothermic reaction
+        //standard reaction enthalpy (assuming Ellingham's approximation) (kJ/mol-1)
+        private float delta_r_H0; //the minus is a caracteristic for an exothermic reaction
 
         
         // Thermal diffusivity (square meter by second)
@@ -161,6 +158,7 @@ public class ThermoBody : MonoBehaviour
         _deltaT = tf.deltaT;
         _Tatm = tf.Tatm;
         _c = tf.GetC();
+        delta_r_H0 = tf.Getdeltar_H();
         
         // initially everything temperature is equal to Tatm
         T = _Tatm;
@@ -195,6 +193,11 @@ public class ThermoBody : MonoBehaviour
     public float Getc() 
     {
         return _c;
+    }
+
+    public float Getdeltar_H0() 
+    {
+        return delta_r_H0;
     }
 
     public void ChangeT(float temp){
