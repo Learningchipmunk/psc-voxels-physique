@@ -180,8 +180,8 @@ MonoBehaviour:
   Tatm: 300
   deltaT: 0.15
   Cboost: 1
-  Dboost: 10
-  deltar_Hboost: 5
+  Dboost: 25
+  deltar_Hboost: 15
 --- !u!114 &8089874465361210517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,10 +202,10 @@ MonoBehaviour:
   distanceInitialCoef: 1.25
   distanceOxCoef: 1.1
   T1: 250
-  T2: 300
-  T3: 500
+  T2: 400
+  T3: 1000
   P1: 0.01
-  P2: 0.4
-  P3: 0.95
+  P2: 0.3
+  P3: 0.99
   DeltaT: 0.2
   Fracmin: 0.001
