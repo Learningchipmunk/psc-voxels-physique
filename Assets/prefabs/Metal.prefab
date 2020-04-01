@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c72bba81edd96554d8bb884d1c38b118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tatm: 300
+  Tatm: 1000
   deltaT: 0.15
   Cboost: 1
   Dboost: 25
