@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091c0ce1d3bbbe14890f85d089939cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isThermDisplayed: 1
+  isThermDisplayed: 0
   p_solv: 0.5
   c_m: 500
 --- !u!114 &972228506921558913
@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c72bba81edd96554d8bb884d1c38b118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tatm: 1000
+  Tatm: 300
   deltaT: 0.15
   Cboost: 1
   Dboost: 250

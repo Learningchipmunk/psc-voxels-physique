@@ -10,6 +10,7 @@ public class Projectile : MonoBehaviour
     public Transform spawnPoint;
     public Text ProjectileType;
 
+    public Toggle isThermDisplayed;
     public Slider FiringRate;
     public Text ProjectileChangeIndication;
     private int projectilechose;
@@ -50,6 +51,11 @@ public class Projectile : MonoBehaviour
         if (Input.GetMouseButton(0)&&(allowfire))
         {
             StartCoroutine(Fire1());            
+        }
+
+        if (Input.GetKeyDown("x"))
+        {
+            isThermDisplayed.isOn = (isThermDisplayed.isOn == true) ? false : true;
         }
 
         if (Input.GetKeyDown("e"))
