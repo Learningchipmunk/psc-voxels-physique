@@ -18,6 +18,9 @@ public class Metal : MonoBehaviour
     // Thermal properties of a voxel
     private ThermoBody _thermals;
 
+    // Indicates if we are showing temp variations through mesh, true means we are.
+    public bool isThermDisplayed = true;
+
     // volume
     private float _v;
 
@@ -166,6 +169,7 @@ public class Metal : MonoBehaviour
         }
     }
 
+    // Updates the texture to show the corrosion
     public void UpdateTexture()
     {
         //Get the Renderer component from the new cube
@@ -199,6 +203,23 @@ public class Metal : MonoBehaviour
                 Destroy(gameObject);
             }
         }   
+    }
+
+    // Updates the texture to show the corrosion
+    public void UpdateTextureThermals()
+    {
+        float _T = _thermals.GetT();
+
+        //Get the percentage of heat considering that 
+        float prop = ( Mathf.Min( Mathf.Max(_T, _T1), _T3) - _T1) / (_T3 - _T1);
+        // the min and max are here to insure that prop won't get out of the [0, 1] interval.
+
+        //for prop = 1, the triplet (R, G, B) defines the color Dark Brown
+        float R = (1.0f - prop) * 0.0f   + prop * (1.0f);
+        float G = (1.0f - prop) * 0.5f   + prop * (0.0f);
+        float B = (1.0f - prop) * 1.0f   + prop * (0.0f);
+
+        _visual.material.SetColor("_Color", new Color(R, G, B, prop/2));
     }
 
 
@@ -254,7 +275,7 @@ public class Metal : MonoBehaviour
             UpdateRaideur();
 
             // Updating the texture of the metal
-            UpdateTexture();
+            if(!isThermDisplayed)UpdateTexture();
         }
     }
 
