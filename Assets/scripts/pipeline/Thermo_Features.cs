@@ -28,4 +28,11 @@ public class Thermo_Features : MonoBehaviour
         return D*Dboost;
     }
 
+    // thermo-chemical constants
+    public const float deltar_H = -111f; //kJ.mol-1
+    public float deltar_Hboost = 0.5f;
+
+    public float Getdeltar_H(){
+        return deltar_H * deltar_Hboost;
+    }
 }
