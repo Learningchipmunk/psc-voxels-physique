@@ -14,7 +14,9 @@ public class Ice : MonoBehaviour
     public float T = 270;
 
     // Specific heat capacities ( kJ/(K*kg) )
-    private float _c = 4f;
+    private float _c;
+    public float Cboost = 10f;
+    public const float C = 4f;
 
     private float _startingTime;
     //extinction time
@@ -49,6 +51,8 @@ public class Ice : MonoBehaviour
 
 
         _startingTime = Time.time;
+
+        _c = Cboost*C;
     }
 
     void OnCollisionEnter(Collision collisionInfo){
