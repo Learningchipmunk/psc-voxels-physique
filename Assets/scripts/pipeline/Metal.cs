@@ -19,7 +19,7 @@ public class Metal : MonoBehaviour
     private ThermoBody _thermals;
 
     // Indicates if we are showing temp variations through mesh, true means we are.
-    public bool isThermDisplayed = true;
+    public bool isThermDisplayed = false;
 
     // volume
     private float _v;
