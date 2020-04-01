@@ -16,6 +16,9 @@ public class ThermoBody : MonoBehaviour
     // Neighbors of the voxel :
     GameObject [] neighbors;
 
+    // Metal class for mesh update :
+    private Metal _metal;
+
 
     // characteristics of the material
         
@@ -152,6 +155,10 @@ public class ThermoBody : MonoBehaviour
 
     void Start()
     {
+        // Getting the Metal script:
+        _metal = GetComponent<Metal>();
+
+        // Getting the thermo features:
         Thermo_Features tf = GetComponent<Thermo_Features>();
 
         _d = tf.GetD();
@@ -172,12 +179,15 @@ public class ThermoBody : MonoBehaviour
     void FixedUpdate()
     {
         // Performance optimizer, does not compute for all metals !
-        if((T > 300.1f && T > 299.9f) && (Tnew > 300.1f && Tnew > 299.9f))
+        if((T > (_Tatm + 0.1) && T > (_Tatm - 0.1)) && (Tnew > (_Tatm + 0.1) && Tnew > (_Tatm - 0.1)))
         {// Ice mat must change temp > 0.2 K otherwise no update will be done...
             if(Time.time >= _lastReaction + _deltaT)
             {
                 UpdateT();
                 _lastReaction = Time.time;
+
+                // Updates the texture if we are displaying Temp
+                if(_metal.isThermDisplayed)_metal.UpdateTextureThermals();
             }
             
             // Ensures that _delta is bigger than the frame rate !

@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091c0ce1d3bbbe14890f85d089939cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isThermDisplayed: 1
   p_solv: 0.5
   c_m: 500
 --- !u!114 &972228506921558913
@@ -180,7 +181,7 @@ MonoBehaviour:
   Tatm: 300
   deltaT: 0.15
   Cboost: 1
-  Dboost: 25
+  Dboost: 250
   deltar_Hboost: 15
 --- !u!114 &8089874465361210517
 MonoBehaviour:
@@ -201,7 +202,7 @@ MonoBehaviour:
   raideurOx: 900
   distanceInitialCoef: 1.25
   distanceOxCoef: 1.1
-  T1: 250
+  T1: 25
   T2: 400
   T3: 1000
   P1: 0.01
