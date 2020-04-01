@@ -170,7 +170,7 @@ public class Metal : MonoBehaviour
     }
 
     // Updates the texture to show the corrosion
-    public void UpdateTexture()
+    private void UpdateTexture()
     {
         //Get the Renderer component from the new cube
         var cubeRenderer = _visual;
@@ -185,7 +185,11 @@ public class Metal : MonoBehaviour
 
         //Call SetColor using the shader property name "_Color" and setting the color to (R, G, B)
         cubeRenderer.material.SetColor("_Color", new Color(R, G, B, prop/2));
+ 
+    }
 
+    private void DestroyMetal()
+    {
         //Random Draw that decides if the metal is destroyed or passivated.    
         if(IsCompletelyCorroded())
         {
@@ -202,7 +206,7 @@ public class Metal : MonoBehaviour
                 // Destroys the game object
                 Destroy(gameObject);
             }
-        }   
+        }  
     }
 
     // Updates the texture to show the corrosion
@@ -276,6 +280,9 @@ public class Metal : MonoBehaviour
 
             // Updating the texture of the metal
             if(!isThermDisplayed)UpdateTexture();
+            
+            // Check If the MEtal is corroded, if it is it destroys it
+            DestroyMetal();
         }
     }
 
