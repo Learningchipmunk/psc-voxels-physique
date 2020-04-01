@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Metal : MonoBehaviour
@@ -19,7 +20,7 @@ public class Metal : MonoBehaviour
     private ThermoBody _thermals;
 
     // Indicates if we are showing temp variations through mesh, true means we are.
-    public bool isThermDisplayed = false;
+    public bool isThermDisplayed;
 
     // volume
     private float _v;
@@ -147,6 +148,14 @@ public class Metal : MonoBehaviour
 
         // initialising prog
         UpdateProg();
+
+        // initialising isThermDisplayed
+        if(GameObject.FindWithTag("Toggle").GetComponent<Toggle>().isOn == true)
+        {
+            isThermDisplayed = true;
+            UpdateTextureThermals();
+        }
+
     }
 
     public void UpdateProg() 
@@ -280,7 +289,8 @@ public class Metal : MonoBehaviour
 
             // Updating the texture of the metal
             if(!isThermDisplayed)UpdateTexture();
-            
+            else UpdateTextureThermals();
+
             // Check If the MEtal is corroded, if it is it destroys it
             DestroyMetal();
         }
@@ -304,6 +314,19 @@ public class Metal : MonoBehaviour
     public bool IsCompletelyCorroded()
     {
         return _nox >= _nm;
+    }
+
+    void FixedUpdate(){
+        if(GameObject.FindWithTag("Toggle").GetComponent<Toggle>().isOn == true && isThermDisplayed == false)
+        {
+            isThermDisplayed = true;
+            UpdateTextureThermals();
+        }
+        else if(GameObject.FindWithTag("Toggle").GetComponent<Toggle>().isOn == false && isThermDisplayed == true)
+        {
+            isThermDisplayed = false;
+            UpdateTexture();
+        }
     }
 
 }
