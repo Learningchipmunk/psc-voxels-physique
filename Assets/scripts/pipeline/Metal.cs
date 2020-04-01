@@ -18,6 +18,12 @@ public class Metal : MonoBehaviour
     // Thermal properties of a voxel
     private ThermoBody _thermals;
 
+    // volume
+    private float _v;
+
+    // density
+    private float _rho;
+
     //metal specific thermal a/o thermochemical properties
 
     // Probability of being a solvant
@@ -101,6 +107,7 @@ public class Metal : MonoBehaviour
         
         Metal_Features mf = GetComponent<Metal_Features>();
         
+        _rho = mf.rho;
         c_m = mf.GetC_m();
         p_solv = mf.p_solv;
         Fracmin = mf.Fracmin;
@@ -123,8 +130,8 @@ public class Metal : MonoBehaviour
         _R2 = (_P3 - _P2)/(_T3 - _T2);
 
         // volume (cubic meter) and amount of metal
-        float v = this.transform.localScale.x * this.transform.localScale.y * this.transform.localScale.z ;
-        _nm = c_m*v;
+        _v = this.transform.localScale.x * this.transform.localScale.y * this.transform.localScale.z ;
+        _nm = c_m*_v;
 
         // 0 atoms have been eroded initially
         _nox = 0f;
@@ -217,7 +224,9 @@ public class Metal : MonoBehaviour
         _nox = Mathf.Min(_nox + step, _neq);
 
         //thermochemical consequence : heat release onto the voxel
-        _thermals.ChangeT(_thermals.GetT() - (step / _nm)*(_thermals.delta_r_H0 / _thermals.cp0m));
+        Debug.Log("Rho "+_rho);
+        Debug.Log("Volume : "+_v);
+        _thermals.ChangeT(_thermals.GetT() - step * (_thermals.Getdeltar_H0() / (_thermals.Getc() * _rho * _v)));
     }
 
     public void UpdateNeq(float delta) {

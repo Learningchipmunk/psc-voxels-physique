@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Metal_Features : MonoBehaviour
 {   
+    // density
+    public float rho = 10000f;
+    
     // concentration de metal (moles / m3)
     public const float C_m = 100000f;
 
@@ -35,5 +38,6 @@ public class Metal_Features : MonoBehaviour
 
         // Fracmin is the minimum part of _nm oxidised at each step
         public float Fracmin = 0.01f;
-    
+
+
     }
