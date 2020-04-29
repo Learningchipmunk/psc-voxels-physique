@@ -13,7 +13,7 @@ using UnityEngine;
 public class TreeUpdater : MonoBehaviour
 {
     // The tree that contains the graph of all neighboring voxels:
-    private Dictionary<GameObject, LinkedList<GameObject>> _tree = new Dictionary<GameObject, LinkedList<GameObject>>();
+    private Dictionary<GameObject, LinkedList<ThermoBody>> _tree = new Dictionary<GameObject, LinkedList<ThermoBody>>();
     
      // ------------------------------------ Functions for trees ------------------------- //
 
@@ -31,11 +31,11 @@ public class TreeUpdater : MonoBehaviour
         { 
   
             // Getting the list of neighbors of a
-            LinkedList<GameObject> l;
+            LinkedList<ThermoBody> l;
             _tree.TryGetValue(a, out l);
 
             // Adding b to the list
-            l.AddFirst(b);
+            l.AddFirst(b.GetComponent<ThermoBody>());
 
             // Replacing the new list in the HashMap
             _tree.Remove(a);
@@ -45,10 +45,10 @@ public class TreeUpdater : MonoBehaviour
         { 
 
             // Creating the list of neighbors of a
-            LinkedList<GameObject> l = new LinkedList<GameObject>();
+            LinkedList<ThermoBody> l = new LinkedList<ThermoBody>();
 
             // Adding b to the list
-            l.AddFirst(b);
+            l.AddFirst(b.GetComponent<ThermoBody>());
 
             // Adding the couple (a, l) to the HashMap
             _tree.Add(a, l); 
@@ -67,11 +67,11 @@ public class TreeUpdater : MonoBehaviour
         { 
   
             // Getting the list of neighbors of a
-            LinkedList<GameObject> l;
+            LinkedList<ThermoBody> l;
             _tree.TryGetValue(a, out l);
 
             // Adding b to the list
-            if(l.Remove(b)) Debug.Log("Successfull! " + b.name + " was indeed a neighbor.");else Debug.Log("Not successfull...");
+            if(l.Remove(b.GetComponent<ThermoBody>())) Debug.Log("Successfull! " + b.name + " was indeed a neighbor.");else Debug.Log("Not successfull...");
 
             // Replacing the new list in the HashMap
             _tree.Remove(a);
@@ -81,27 +81,43 @@ public class TreeUpdater : MonoBehaviour
             Debug.Log("You tried to remove a neighbor from a game object not in the tree.");
         }
     }
+
+    public LinkedList<ThermoBody> GetNeighbors(GameObject a)
+    {
+        if (_tree.ContainsKey(a)) 
+        { 
+            // Getting the list of neighbors of a
+            LinkedList<ThermoBody> l;
+            _tree.TryGetValue(a, out l);
+            return l;
+        }else
+        {
+            Debug.Log("You tried to Get the neighbors of a game object that is not in the tree.");
+            return null;
+        }
+    }
+
     public void printTree()
     {
-        foreach(KeyValuePair<GameObject, LinkedList<GameObject>> entry in _tree) 
+        foreach(KeyValuePair<GameObject, LinkedList<ThermoBody>> entry in _tree) 
         { 
             Debug.Log(entry.Key + " -> ");
             
             // We get the Adjacency List of the entry Key
-            LinkedList<GameObject> l = entry.Value;
+            LinkedList<ThermoBody> l = entry.Value;
 
             // We then print the Adjacency List
             Debug.Log(" neighbor list : ");
-            foreach(GameObject gObj in l)
+            foreach(ThermoBody gObj in l)
             {
-                Debug.Log(gObj.name);
+                Debug.Log(gObj.GetName());
             }
         } 
     }
     
     private void awake()
     {
-        _tree = new Dictionary<GameObject, LinkedList<GameObject>>();
+        if(_tree==null)_tree = new Dictionary<GameObject, LinkedList<ThermoBody>>();
     }
 
     // Update is called once per frame
