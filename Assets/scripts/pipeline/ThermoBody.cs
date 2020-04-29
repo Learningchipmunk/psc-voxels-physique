@@ -161,14 +161,14 @@ public class ThermoBody : MonoBehaviour
     public void Propagation()
     {
         // We are using hashSets because the .contains is executed in constant time
-        HashSet<GameObject> visited = new HashSet<GameObject>();
+        HashSet<ThermoBody> visited = new HashSet<ThermoBody>();
 
         // Using a queue to store the visited Vertices is optimal in BreadthFirst graph traversal
         Queue queue = new Queue();
 
-        //ThermoBody initialVertex = gameObject.GetComponent<ThermoBody>();
+        ThermoBody initialVertex = gameObject.GetComponent<ThermoBody>();
 
-        GameObject initialVertex = gameObject;
+        //ThermoBody initialVertex = gameObject;
 
         queue.Enqueue(initialVertex);
         visited.Add(initialVertex);
@@ -176,14 +176,14 @@ public class ThermoBody : MonoBehaviour
         while (queue.Count != 0) {
 
             // We get the first vertex in line and we visit his unvisited neighbors
-            //ThermoBody vertex = (ThermoBody)queue.Dequeue();
-            GameObject vertex = (GameObject)queue.Dequeue();
+            ThermoBody vertex = (ThermoBody)queue.Dequeue();
+            //GameObject vertex = (GameObject)queue.Dequeue();
             
             // We get the neighbors of the current visited  Voxel vertex
-            //LinkedList<ThermoBody> vNeighbors = _refTreeUpdater.GetNeighbors(vertex.gameObject);
-            GameObject [] vNeighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
+            LinkedList<ThermoBody> vNeighbors = _refTreeUpdater.GetNeighbors(vertex.gameObject);
+            //GameObject [] vNeighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
 
-            foreach (GameObject neigh in vNeighbors) 
+            foreach (ThermoBody neigh in vNeighbors) 
             {
 
                 // If we find an unvisited vertex we compute the new Temp, mark it and add it to the queue
@@ -192,8 +192,8 @@ public class ThermoBody : MonoBehaviour
                     visited.Add(neigh);
                     queue.Enqueue(neigh);
 
-                    neigh.GetComponent<ThermoBody>().ComputeNewTemp();
-                    //neigh.ComputeNewTemp();
+                    //neigh.GetComponent<ThermoBody>().ComputeNewTemp();
+                    neigh.ComputeNewTemp();
 
                     // Debug.Log("Nom du Voxel visité : " + neigh.name + " par " + vertex.name);
                 }
@@ -203,10 +203,10 @@ public class ThermoBody : MonoBehaviour
         // We then Set all the voxels to their new Temp
 
         // var clone = new HashSet<Metal>(mList, mList.Comparer);
-        foreach(GameObject entry in visited)
+        foreach(ThermoBody entry in visited)
         {
-            //entry.MajT();
-            entry.GetComponent<ThermoBody>().MajT();
+            entry.MajT();
+            //entry.GetComponent<ThermoBody>().MajT();
         }
     }
 
