@@ -171,7 +171,8 @@ void HookeForce(){
             Debug.Log(this.name + " " + this.transform.parent.name + " was too far from " + neighbor.name + " " + neighbor.transform.parent.name);
             return new Vector3(0,0,0);
         }
-        float avg_k = this.k*neighbor.GetComponent<Voxel>().k / (this.k+neighbor.GetComponent<Voxel>().k);
+        float _k = neighbor.GetComponent<Voxel>().k;
+        float avg_k = this.k*_k / (this.k+_k);
         return avg_k * dPos;
     }
 
