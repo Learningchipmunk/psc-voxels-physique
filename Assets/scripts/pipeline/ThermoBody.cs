@@ -90,15 +90,15 @@ public class ThermoBody : MonoBehaviour
             
             else // in this direction the neighbour is inside the structure
             {
-                //float tempNeigh = neigh.GetComponent<ThermoBody>().GetT();
+                float tempNeigh = neigh.GetComponent<ThermoBody>().GetT();
 
-                float tempNeigh = 0;
+                // float tempNeigh = 0;
 
-                // Getting the temp of the neigh from the tree
-                foreach (ThermoBody neigh1 in _refTreeUpdater.GetNeighbors(gameObject)) 
-                {
-                    if(neigh1.GetName() == neigh.name)tempNeigh = neigh1.GetT();
-                }
+                // // Getting the temp of the neigh from the tree
+                // foreach (ThermoBody neigh1 in _refTreeUpdater.GetNeighbors(gameObject)) 
+                // {
+                //     if(neigh1.GetName() == neigh.name)tempNeigh = neigh1.GetT();
+                // }
 
 
                 // Case where the neighbor is in (+x,-x)
