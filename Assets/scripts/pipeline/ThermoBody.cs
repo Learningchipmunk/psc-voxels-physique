@@ -37,7 +37,9 @@ public class ThermoBody : MonoBehaviour
         
         // Thermal diffusivity (square meter by second)
         private float _d;
-    
+
+        // adapted Newton coefficient
+        private float _h;
 
     public void ComputeNewTemp()
     {
@@ -56,13 +58,58 @@ public class ThermoBody : MonoBehaviour
 
 
        
-        int i = 0; // (+x,-x, +y, -y, +z, -z) 
+        int dir = 0; // (+x,-x, +y, -y, +z, -z)
 
         foreach (GameObject neigh in neighbors) 
         { 
+            
+            
+            if(neigh == null) // in this direction the neighbour is outside the structure
+            {
+                // Case where the neighbor is in (+x,-x)
+                if(dir <= 1)
+                {
+                    Tnew += _h * (_Tatm - T) / deltaX;
+                }// Case where the neighbor is in (+y, -y)
+                else if(dir <= 3)
+                {
+                    Tnew += _h * (_Tatm - T) / deltaY;
+                }// Case where the neighbor is in (+z, -z)
+                else if(dir <= 5)
+                {
+                    Tnew += _h * (_Tatm - T) / deltaZ;
+                }
+            }      
+            
+            else // in this direction the neighbour is inside the structure
+            {
+                float tempNeigh = neigh.GetComponent<ThermoBody>().GetT();
+                
+                // Case where the neighbor is in (+x,-x)
+                if(dir <= 1)
+                {
+                    Tnew += _d * (tempNeigh - T) / (deltaX * deltaX);
+                }// Case where the neighbor is in (+y, -y)
+                else if(dir <= 3)
+                {
+                    Tnew += _d * (tempNeigh - T) / (deltaY * deltaY);
+                }// Case where the neighbor is in (+z, -z)
+                else if(dir <= 5)
+                {
+                    Tnew += _d * (tempNeigh - T) / (deltaZ * deltaZ);
+                }
+            }
+            // Update neighbour direction
+            dir += 1;
+        }
+        
+        // complete the equation
+        Tnew = _deltaT * Tnew + T;
+            
+            /*
             // Temperature of the neighbor
             float tempNeigh;
-
+            
             // If he has no neighbor on a certain direction, we consider him neighboring a voxel with T = Tatm
             if (neigh == null) 
             {
@@ -91,7 +138,7 @@ public class ThermoBody : MonoBehaviour
         }
 
         // We add the last expression to Tnew
-        Tnew += (1 - 2 * _d * _deltaT * ( 1/(deltaX * deltaX) + 1/(deltaY * deltaY) + 1/ (deltaZ * deltaZ) )) * T;
+        Tnew += (1 - 2 * _d * _deltaT * ( 1/(deltaX * deltaX) + 1/(deltaY * deltaY) + 1/ (deltaZ * deltaZ) )) * T;*/
 
     }
 
@@ -166,6 +213,7 @@ public class ThermoBody : MonoBehaviour
         _Tatm = tf.Tatm;
         _c = tf.GetC();
         delta_r_H0 = tf.Getdeltar_H();
+        _h = tf.GetH();
         
         // initially everything temperature is equal to Tatm
         T = _Tatm;
@@ -179,7 +227,7 @@ public class ThermoBody : MonoBehaviour
     void FixedUpdate()
     {
         // Performance optimizer, does not compute for all metals !
-        if((T > (_Tatm + 0.1) && T > (_Tatm - 0.1)) && (Tnew > (_Tatm + 0.1) && Tnew > (_Tatm - 0.1)))
+        // if((T > (_Tatm + 0.1) && T > (_Tatm - 0.1)) && (Tnew > (_Tatm + 0.1) && Tnew > (_Tatm - 0.1)))
         {// Ice mat must change temp > 0.2 K otherwise no update will be done...
             if(Time.time >= _lastReaction + _deltaT)
             {
