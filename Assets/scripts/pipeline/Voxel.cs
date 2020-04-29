@@ -40,11 +40,12 @@ public void ResetNeighbors(){
     Debug.Log(this.name + "( parent : " + this.transform.parent.name + " ) is now alone");
     foreach (GameObject neigh in this.voxelNeighbors){
         if (neigh!=null){
+            Voxel _neigh = neigh.GetComponent<Voxel>();
             // Removes the neighbors from the tree:
             _refTreeUpdater.RemoveNeighbors(this.gameObject, this.voxelNeighbors[k]);
-
-            neigh.GetComponent<Voxel>().SetNeighbor(f(k),null);
-            neigh.GetComponent<Voxel>().neighborsNumber = neigh.GetComponent<Voxel>().neighborsNumber - 1 ;
+            
+            _neigh.SetNeighbor(f(k),null);
+            _neigh.neighborsNumber = _neigh.neighborsNumber - 1 ;
 
 
         }
@@ -60,8 +61,9 @@ public void ResetNeighbor(int k){
 
     // k : indice of the neighbor
     // this function is a new one that allows to only break a link between the voxel and one neighbor, not all of them.
-    this.voxelNeighbors[k].GetComponent<Voxel>().SetNeighbor(f(k),null);
-    this.voxelNeighbors[k].GetComponent<Voxel>().neighborsNumber = this.voxelNeighbors[k].GetComponent<Voxel>().neighborsNumber - 1 ;
+    Voxel _neigh = this.voxelNeighbors[k].GetComponent<Voxel>();
+    _neigh.SetNeighbor(f(k),null);
+    _neigh.neighborsNumber = _neigh.neighborsNumber - 1 ;
     this.voxelNeighbors[k] = null;
     this.neighborsNumber = this.neighborsNumber - 1;
 
@@ -151,7 +153,8 @@ void HookeForce(){
     foreach (GameObject neigh in this.voxelNeighbors){
         if (neigh != null){
             Vector3 hookForce = this.HookForce(neigh,k);
-            this.GetComponent<Rigidbody>().AddForce(hookForce + this.TranslationFriction());
+            Rigidbody rb = this.GetComponent<Rigidbody>();
+            rb.AddForce(hookForce - this.alphaTranslation * rb.velocity);
         }
         k++;
     }
@@ -182,9 +185,10 @@ void HookeForce(){
     //     return this.C * currentRotation;
     // }
 
+    /*
     public Vector3 TranslationFriction(){
         return - this.alphaTranslation * this.GetComponent<Rigidbody>().velocity;
-    }
+    } */
 //     public Vector3 RotationFriction(GameObject voxel){
 //         return - this.alphaRotation * voxel.GetComponent<Rigidbody>().angularVelocity;
 //     }
