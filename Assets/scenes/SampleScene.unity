@@ -8341,6 +8341,7 @@ GameObject:
   - component: {fileID: 1848435101}
   - component: {fileID: 1848435100}
   - component: {fileID: 1848435104}
+  - component: {fileID: 1848435105}
   m_Layer: 8
   m_Name: Plan
   m_TagString: Platform
@@ -8434,6 +8435,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   n: 0
+--- !u!114 &1848435105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848435099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca02991d881801479dad9b298a7ec66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1856322351
 PrefabInstance:
   m_ObjectHideFlags: 0

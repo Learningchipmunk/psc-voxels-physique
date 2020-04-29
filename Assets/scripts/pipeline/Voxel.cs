@@ -13,10 +13,16 @@ public class Voxel : MonoBehaviour
     
     public float breakingDistanceCoef;
 
+    // Stores the Script Ref of TreeUpdater :
+     private TreeUpdater _refTreeUpdater;
 
     // ------------------ Awake and Update function --------------- //
 
 void Awake(){
+    // Getting the Tree Updater script:
+    _refTreeUpdater = GameObject.FindWithTag("Platform").GetComponent<TreeUpdater>();
+
+
     this.k = 1000f;
     this.alphaTranslation = 10f;
     this.breakingDistanceCoef = 1.1f;
@@ -34,8 +40,13 @@ public void ResetNeighbors(){
     Debug.Log(this.name + "( parent : " + this.transform.parent.name + " ) is now alone");
     foreach (GameObject neigh in this.voxelNeighbors){
         if (neigh!=null){
+            // Removes the neighbors from the tree:
+            _refTreeUpdater.RemoveNeighbors(this.gameObject, this.voxelNeighbors[k]);
+
             neigh.GetComponent<Voxel>().SetNeighbor(f(k),null);
             neigh.GetComponent<Voxel>().neighborsNumber = neigh.GetComponent<Voxel>().neighborsNumber - 1 ;
+
+
         }
         k=k+1;
     }
@@ -44,12 +55,18 @@ public void ResetNeighbors(){
 }
 
 public void ResetNeighbor(int k){
+    // Removes the neighbors from the tree:
+    _refTreeUpdater.RemoveNeighbors(this.gameObject, this.voxelNeighbors[k]);
+
     // k : indice of the neighbor
     // this function is a new one that allows to only break a link between the voxel and one neighbor, not all of them.
     this.voxelNeighbors[k].GetComponent<Voxel>().SetNeighbor(f(k),null);
     this.voxelNeighbors[k].GetComponent<Voxel>().neighborsNumber = this.voxelNeighbors[k].GetComponent<Voxel>().neighborsNumber - 1 ;
     this.voxelNeighbors[k] = null;
     this.neighborsNumber = this.neighborsNumber - 1;
+
+
+
 }
 // f gives the position of "this" in the neighbor.voxelNeighbors gameObject[] so we can delete it in this array.
 int f(int i){
@@ -82,6 +99,9 @@ public void SetNeighbor(int pos, GameObject neighbor){
     }
     else{
         if (this.voxelNeighbors[pos] == null){
+            // Adds the neighbor to the tree:
+            _refTreeUpdater.AddNeighbors(this.gameObject, neighbor);
+
             this.voxelNeighbors[pos] = neighbor;
             this.neighborsNumber +=1;
         }
@@ -114,6 +134,10 @@ public void SetNeighbor(int pos, GameObject neighbor){
             // we check which neighbor is closer to the current voxel.
             if ( dPos1.magnitude < dPos2.magnitude ){ // the new neighbor is closer than the previous one. So we replace the current neighbor by the new one.
                 this.voxelNeighbors[pos] = neighbor;
+
+                // Removes the neighbor from the tree before adding the new one
+                _refTreeUpdater.RemoveNeighbors(this.gameObject, this.voxelNeighbors[pos]);
+                _refTreeUpdater.AddNeighbors(this.gameObject, neighbor);
             }
         }   
     }

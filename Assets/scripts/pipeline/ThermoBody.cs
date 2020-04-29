@@ -19,6 +19,10 @@ public class ThermoBody : MonoBehaviour
     // Metal class for mesh update :
     private Metal _metal;
 
+    // Stores the Script Ref of TreeUpdater :
+     private TreeUpdater _refTreeUpdater;
+
+
 
     // characteristics of the material
         
@@ -155,6 +159,9 @@ public class ThermoBody : MonoBehaviour
 
     void Start()
     {
+        // Getting the Tree Updater script:
+        _refTreeUpdater = GameObject.FindWithTag("Platform").GetComponent<TreeUpdater>();
+
         // Getting the Metal script:
         _metal = GetComponent<Metal>();
 

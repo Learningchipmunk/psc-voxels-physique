@@ -11,6 +11,10 @@ public class MetalUpdater : MonoBehaviour
     HashSet<Metal> mList = new HashSet<Metal>();
 
 
+
+
+    // -------------------- Functions for metal list ------------------------- //
+
     public void addMetal(Metal m)
     {
         if(!mList.Contains(m))
@@ -46,6 +50,8 @@ public class MetalUpdater : MonoBehaviour
             }
         }
     }
+
+   
     
 
     // Update is called once per frame
