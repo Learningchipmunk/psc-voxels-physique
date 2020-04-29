@@ -13,19 +13,27 @@ public class Thermo_Features : MonoBehaviour
     // specific heat capacity kJ/(K*kg)
     public const float C = 0.5f;
 
-    public float Cboost = 1f;
+    public float CBoost = 1f;
 
     public float GetC() {
-        return C * Cboost;
+        return C * CBoost;
     }
 
     // thermal diffusivity
     public const float D = 0.00001f;
 
-    public float Dboost = 1f;
+    public float DBoost = 1f;
 
     public float GetD() {
-        return D*Dboost;
+        return D*DBoost;
+    }
+
+    // adapted newton-coefficient : h / (rho*C)
+    public const float h = 0.002f;
+    public float hBoost = 1f;
+
+    public float GetH() {
+        return h*hBoost;
     }
 
     // thermo-chemical constants

@@ -180,8 +180,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Tatm: 300
   deltaT: 0.15
-  Cboost: 1
-  Dboost: 250
+  CBoost: 1
+  DBoost: 1000
+  hBoost: 0.01
   deltar_Hboost: 15
 --- !u!114 &8089874465361210517
 MonoBehaviour:
