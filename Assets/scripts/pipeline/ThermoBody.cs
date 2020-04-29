@@ -20,7 +20,10 @@ public class ThermoBody : MonoBehaviour
     private Metal _metal;
 
     // Stores the Script Ref of TreeUpdater :
-     private TreeUpdater _refTreeUpdater;
+    private TreeUpdater _refTreeUpdater;
+
+    // Stores the name of the game Object in order to recognize it:
+    private string _name;
 
 
 
@@ -87,8 +90,17 @@ public class ThermoBody : MonoBehaviour
             
             else // in this direction the neighbour is inside the structure
             {
-                float tempNeigh = neigh.GetComponent<ThermoBody>().GetT();
-                
+                //float tempNeigh = neigh.GetComponent<ThermoBody>().GetT();
+
+                float tempNeigh = 0;
+
+                // Getting the temp of the neigh from the tree
+                foreach (ThermoBody neigh1 in _refTreeUpdater.GetNeighbors(gameObject)) 
+                {
+                    if(neigh1.GetName() == neigh.name)tempNeigh = neigh1.GetT();
+                }
+
+
                 // Case where the neighbor is in (+x,-x)
                 if(dir <= 1)
                 {
@@ -149,23 +161,25 @@ public class ThermoBody : MonoBehaviour
     public void Propagation()
     {
         // We are using hashSets because the .contains is executed in constant time
-        HashSet<GameObject> visited = new HashSet<GameObject>();
+        HashSet<ThermoBody> visited = new HashSet<ThermoBody>();
 
         // Using a queue to store the visited Vertices is optimal in BreadthFirst graph traversal
         Queue queue = new Queue();
 
-        queue.Enqueue(gameObject);
-        visited.Add(gameObject);
+        ThermoBody initialVertex = gameObject.GetComponent<ThermoBody>();
+
+        queue.Enqueue(initialVertex);
+        visited.Add(initialVertex);
 
         while (queue.Count != 0) {
 
             // We get the first vertex in line and we visit his unvisited neighbors
-            GameObject vertex = (GameObject)queue.Dequeue();
+            ThermoBody vertex = (ThermoBody)queue.Dequeue();
             
             // We get the neighbors of the current visited  Voxel vertex
-            GameObject [] vNeighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
+            LinkedList<ThermoBody> vNeighbors = _refTreeUpdater.GetNeighbors(vertex.gameObject);
 
-            foreach (GameObject neigh in vNeighbors) 
+            foreach (ThermoBody neigh in vNeighbors) 
             {
 
                 // If we find an unvisited vertex we compute the new Temp, mark it and add it to the queue
@@ -174,7 +188,7 @@ public class ThermoBody : MonoBehaviour
                     visited.Add(neigh);
                     queue.Enqueue(neigh);
 
-                    neigh.GetComponent<ThermoBody>().ComputeNewTemp();
+                    neigh.ComputeNewTemp();
 
                     // Debug.Log("Nom du Voxel visité : " + neigh.name + " par " + vertex.name);
                 }
@@ -184,9 +198,9 @@ public class ThermoBody : MonoBehaviour
         // We then Set all the voxels to their new Temp
 
         // var clone = new HashSet<Metal>(mList, mList.Comparer);
-        foreach(GameObject entry in visited)
+        foreach(ThermoBody entry in visited)
         {
-            entry.GetComponent<ThermoBody>().MajT();
+            entry.MajT();
         }
     }
 
@@ -206,6 +220,9 @@ public class ThermoBody : MonoBehaviour
 
     void Start()
     {
+        // Stores the name:
+        _name = gameObject.name;
+        
         // Getting the Tree Updater script:
         _refTreeUpdater = GameObject.FindWithTag("Platform").GetComponent<TreeUpdater>();
 
@@ -263,6 +280,11 @@ public class ThermoBody : MonoBehaviour
     public float Getdeltar_H0() 
     {
         return delta_r_H0;
+    }
+
+    public string GetName()
+    {
+        return _name;
     }
 
     public void ChangeT(float temp){
