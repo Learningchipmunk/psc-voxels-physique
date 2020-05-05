@@ -40,7 +40,10 @@ public class generator : MonoBehaviour {
     public void InitNeighbors(Transform transform){
         
         // the issue with such a radius (max(Scale)) is that it does not work for no-cubic voxel (or does not work as well as it could)
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 0.60f * Mathf.Max(transform.localScale.x,transform.localScale.y,transform.localScale.z)); // lossyScale is the global scale of the object (read only)
+        Collider[] hitColliders = Physics.OverlapBox(transform.position, 2*transform.localScale); // lossyScale is the global scale of the object (read only)
+        //Collider[] hitColliders = Physics.OverlapSphere(transform.position, 0.60f * Mathf.Max(transform.localScale.x,transform.localScale.y,transform.localScale.z));
+
+        
         foreach (Collider neighColliders in hitColliders){
 
             // we have to know the type of the neighbor. 

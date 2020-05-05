@@ -7,7 +7,8 @@ public class Metal : MonoBehaviour
 {
 
     // Stores the Script Ref of MetalUpdater
-    MetalUpdater referenceScript;
+    private MetalUpdater _refMetalUpdater;
+
 
     // Stores the Script Ref of Voxel
     Voxel referenceVoxel;
@@ -107,7 +108,7 @@ public class Metal : MonoBehaviour
         this.referenceVoxel = this.GetComponent<Voxel>();
 
         // To find the platform that stores the lists of metals
-        referenceScript = GameObject.FindWithTag("Platform").GetComponent<MetalUpdater>();
+        _refMetalUpdater = GameObject.FindWithTag("Platform").GetComponent<MetalUpdater>();
         
         Metal_Features mf = GetComponent<Metal_Features>();
         
@@ -207,7 +208,7 @@ public class Metal : MonoBehaviour
             if(p <= p_solv)
             {
                 // When destoryed it remove itself from the list of metals in Platform
-                referenceScript.removeMetal(this.GetComponent<Metal>());
+                _refMetalUpdater.removeMetal(this.GetComponent<Metal>());
 
                 // Removes the Mesh
                 _visual.enabled = false;

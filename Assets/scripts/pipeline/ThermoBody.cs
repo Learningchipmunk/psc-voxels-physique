@@ -19,6 +19,13 @@ public class ThermoBody : MonoBehaviour
     // Metal class for mesh update :
     private Metal _metal;
 
+    // Stores the Script Ref of TreeUpdater :
+    private TreeUpdater _refTreeUpdater;
+
+    // Stores the name of the game Object in order to recognize it:
+    private string _name;
+
+
 
     // characteristics of the material
         
@@ -37,7 +44,9 @@ public class ThermoBody : MonoBehaviour
         
         // Thermal diffusivity (square meter by second)
         private float _d;
-    
+
+        // adapted Newton coefficient
+        private float _h;
 
     public void ComputeNewTemp()
     {
@@ -56,13 +65,67 @@ public class ThermoBody : MonoBehaviour
 
 
        
-        int i = 0; // (+x,-x, +y, -y, +z, -z) 
+        int dir = 0; // (+x,-x, +y, -y, +z, -z)
 
         foreach (GameObject neigh in neighbors) 
         { 
+            
+            
+            if(neigh == null) // in this direction the neighbour is outside the structure
+            {
+                // Case where the neighbor is in (+x,-x)
+                if(dir <= 1)
+                {
+                    Tnew += _h * (_Tatm - T) / deltaX;
+                }// Case where the neighbor is in (+y, -y)
+                else if(dir <= 3)
+                {
+                    Tnew += _h * (_Tatm - T) / deltaY;
+                }// Case where the neighbor is in (+z, -z)
+                else if(dir <= 5)
+                {
+                    Tnew += _h * (_Tatm - T) / deltaZ;
+                }
+            }      
+            
+            else // in this direction the neighbour is inside the structure
+            {
+                float tempNeigh = neigh.GetComponent<ThermoBody>().GetT();
+
+                // float tempNeigh = 0;
+
+                // // Getting the temp of the neigh from the tree
+                // foreach (ThermoBody neigh1 in _refTreeUpdater.GetNeighbors(gameObject)) 
+                // {
+                //     if(neigh1.GetName() == neigh.name)tempNeigh = neigh1.GetT();
+                // }
+
+
+                // Case where the neighbor is in (+x,-x)
+                if(dir <= 1)
+                {
+                    Tnew += _d * (tempNeigh - T) / (deltaX * deltaX);
+                }// Case where the neighbor is in (+y, -y)
+                else if(dir <= 3)
+                {
+                    Tnew += _d * (tempNeigh - T) / (deltaY * deltaY);
+                }// Case where the neighbor is in (+z, -z)
+                else if(dir <= 5)
+                {
+                    Tnew += _d * (tempNeigh - T) / (deltaZ * deltaZ);
+                }
+            }
+            // Update neighbour direction
+            dir += 1;
+        }
+        
+        // complete the equation
+        Tnew = _deltaT * Tnew + T;
+            
+            /*
             // Temperature of the neighbor
             float tempNeigh;
-
+            
             // If he has no neighbor on a certain direction, we consider him neighboring a voxel with T = Tatm
             if (neigh == null) 
             {
@@ -91,30 +154,36 @@ public class ThermoBody : MonoBehaviour
         }
 
         // We add the last expression to Tnew
-        Tnew += (1 - 2 * _d * _deltaT * ( 1/(deltaX * deltaX) + 1/(deltaY * deltaY) + 1/ (deltaZ * deltaZ) )) * T;
+        Tnew += (1 - 2 * _d * _deltaT * ( 1/(deltaX * deltaX) + 1/(deltaY * deltaY) + 1/ (deltaZ * deltaZ) )) * T;*/
 
     }
 
     public void Propagation()
     {
         // We are using hashSets because the .contains is executed in constant time
-        HashSet<GameObject> visited = new HashSet<GameObject>();
+        HashSet<ThermoBody> visited = new HashSet<ThermoBody>();
 
         // Using a queue to store the visited Vertices is optimal in BreadthFirst graph traversal
         Queue queue = new Queue();
 
-        queue.Enqueue(gameObject);
-        visited.Add(gameObject);
+        ThermoBody initialVertex = gameObject.GetComponent<ThermoBody>();
+
+        //ThermoBody initialVertex = gameObject;
+
+        queue.Enqueue(initialVertex);
+        visited.Add(initialVertex);
 
         while (queue.Count != 0) {
 
             // We get the first vertex in line and we visit his unvisited neighbors
-            GameObject vertex = (GameObject)queue.Dequeue();
+            ThermoBody vertex = (ThermoBody)queue.Dequeue();
+            //GameObject vertex = (GameObject)queue.Dequeue();
             
             // We get the neighbors of the current visited  Voxel vertex
-            GameObject [] vNeighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
+            LinkedList<ThermoBody> vNeighbors = _refTreeUpdater.GetNeighbors(vertex.gameObject);
+            //GameObject [] vNeighbors = vertex.GetComponent<Voxel>().voxelNeighbors;
 
-            foreach (GameObject neigh in vNeighbors) 
+            foreach (ThermoBody neigh in vNeighbors) 
             {
 
                 // If we find an unvisited vertex we compute the new Temp, mark it and add it to the queue
@@ -123,7 +192,8 @@ public class ThermoBody : MonoBehaviour
                     visited.Add(neigh);
                     queue.Enqueue(neigh);
 
-                    neigh.GetComponent<ThermoBody>().ComputeNewTemp();
+                    //neigh.GetComponent<ThermoBody>().ComputeNewTemp();
+                    neigh.ComputeNewTemp();
 
                     // Debug.Log("Nom du Voxel visité : " + neigh.name + " par " + vertex.name);
                 }
@@ -133,9 +203,10 @@ public class ThermoBody : MonoBehaviour
         // We then Set all the voxels to their new Temp
 
         // var clone = new HashSet<Metal>(mList, mList.Comparer);
-        foreach(GameObject entry in visited)
+        foreach(ThermoBody entry in visited)
         {
-            entry.GetComponent<ThermoBody>().MajT();
+            entry.MajT();
+            //entry.GetComponent<ThermoBody>().MajT();
         }
     }
 
@@ -155,6 +226,12 @@ public class ThermoBody : MonoBehaviour
 
     void Start()
     {
+        // Stores the name:
+        _name = gameObject.name;
+        
+        // Getting the Tree Updater script:
+        _refTreeUpdater = GameObject.FindWithTag("Platform").GetComponent<TreeUpdater>();
+
         // Getting the Metal script:
         _metal = GetComponent<Metal>();
 
@@ -166,6 +243,7 @@ public class ThermoBody : MonoBehaviour
         _Tatm = tf.Tatm;
         _c = tf.GetC();
         delta_r_H0 = tf.Getdeltar_H();
+        _h = tf.GetH();
         
         // initially everything temperature is equal to Tatm
         T = _Tatm;
@@ -179,7 +257,7 @@ public class ThermoBody : MonoBehaviour
     void FixedUpdate()
     {
         // Performance optimizer, does not compute for all metals !
-        if((T > (_Tatm + 0.1) && T > (_Tatm - 0.1)) && (Tnew > (_Tatm + 0.1) && Tnew > (_Tatm - 0.1)))
+        // if((T > (_Tatm + 0.1) && T > (_Tatm - 0.1)) && (Tnew > (_Tatm + 0.1) && Tnew > (_Tatm - 0.1)))
         {// Ice mat must change temp > 0.2 K otherwise no update will be done...
             if(Time.time >= _lastReaction + _deltaT)
             {
@@ -208,6 +286,11 @@ public class ThermoBody : MonoBehaviour
     public float Getdeltar_H0() 
     {
         return delta_r_H0;
+    }
+
+    public string GetName()
+    {
+        return _name;
     }
 
     public void ChangeT(float temp){
