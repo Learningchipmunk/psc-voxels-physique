@@ -79,12 +79,12 @@ public class Acid : MonoBehaviour
 
             UpdateNa(delta_na);
             // triggering corroding updates
-            M.UpdateNeq(delta_na);
-            referenceScript.addMetal(M);
+            if(M != null)M.UpdateNeq(delta_na);
+            if(M != null && referenceScript != null)referenceScript.addMetal(M);
             
             if(_na == 0)
             {
-                visual.enabled = false;
+                if(visual != null)visual.enabled = false;
                 
                 // ------------- Insert animation here ----------------- //
 
