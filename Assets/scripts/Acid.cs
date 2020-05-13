@@ -67,30 +67,32 @@ public class Acid : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collisionInfo) {
-        if(collisionInfo.collider.tag.Contains("Metal"))
-        {
-            
-            // Getting info on the metal.
-            Metal M = collisionInfo.gameObject.GetComponent<Metal>();
-            float neq = M.GetNeq();
-            float nm = M.GetNm();
-
-            float delta_na = Mathf.Min(nm - neq, _na);
-
-            UpdateNa(delta_na);
-            // triggering corroding updates
-            if(M != null)M.UpdateNeq(delta_na);
-            if(M != null && referenceScript != null)referenceScript.addMetal(M);
-            
-            if(_na == 0)
+        if(collisionInfo.gameObject != null && referenceScript != null){
+            if(collisionInfo.collider.tag.Contains("Metal"))
             {
-                if(visual != null)visual.enabled = false;
                 
-                // ------------- Insert animation here ----------------- //
+                // Getting info on the metal.
+                Metal M = collisionInfo.gameObject.GetComponent<Metal>();
+                float neq = M.GetNeq();
+                float nm = M.GetNm();
 
-                Destroy(gameObject);
+                float delta_na = Mathf.Min(nm - neq, _na);
+
+                UpdateNa(delta_na);
+                // triggering corroding updates
+                M.UpdateNeq(delta_na);
+
+                referenceScript.addMetal(M);
+                
+                if(_na == 0)
+                {
+                    visual.enabled = false;
+                    
+                    // ------------- Insert animation here ----------------- //
+
+                    Destroy(gameObject);
+                }  
             }
-            
         }
     }
 
