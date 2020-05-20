@@ -46,7 +46,7 @@ public class Projectile : MonoBehaviour
         projectilechose = 1;
 
     }
-    void FixedUpdate()
+    void Update()
     {
         if (Input.GetMouseButton(0)&&(allowfire))
         {

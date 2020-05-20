@@ -14,6 +14,8 @@ public class Metal : MonoBehaviour
     Voxel referenceVoxel;
 
 
+    private Toggle _toggle;
+
     // _visual
     private MeshRenderer _visual;
 
@@ -103,6 +105,7 @@ public class Metal : MonoBehaviour
 
     void Start()
     {
+        _toggle = GameObject.FindWithTag("Toggle").GetComponent<Toggle>();
 
         // Gets the script Voxel
         this.referenceVoxel = this.GetComponent<Voxel>();
@@ -318,13 +321,14 @@ public class Metal : MonoBehaviour
     }
 
     void FixedUpdate(){
-        if(GameObject.FindWithTag("Toggle").GetComponent<Toggle>().isOn == true && isThermDisplayed == false)
+        if(_toggle.isOn == true && isThermDisplayed == false)
         {
-            isThermDisplayed = true;
+           isThermDisplayed = true;
             UpdateTextureThermals();
         }
-        else if(GameObject.FindWithTag("Toggle").GetComponent<Toggle>().isOn == false && isThermDisplayed == true)
+        else if(_toggle.isOn == false && isThermDisplayed == true)
         {
+            Debug.Log("Coucou");
             isThermDisplayed = false;
             UpdateTexture();
         }

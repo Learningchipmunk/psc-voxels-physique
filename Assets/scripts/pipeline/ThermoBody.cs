@@ -208,6 +208,7 @@ public class ThermoBody : MonoBehaviour
             entry.MajT();
             //entry.GetComponent<ThermoBody>().MajT();
         }
+
     }
 
     public void MajT()
@@ -222,6 +223,8 @@ public class ThermoBody : MonoBehaviour
 
         // Remplace la temp actuelle par la nouvelle
         MajT();
+
+
     }
 
     void Start()
@@ -256,6 +259,8 @@ public class ThermoBody : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        // Updates the texture if we are displaying Temp
+        if(_metal.isThermDisplayed)_metal.UpdateTextureThermals();
         // Performance optimizer, does not compute for all metals !
         // if((T > (_Tatm + 0.1) && T > (_Tatm - 0.1)) && (Tnew > (_Tatm + 0.1) && Tnew > (_Tatm - 0.1)))
         {// Ice mat must change temp > 0.2 K otherwise no update will be done...
@@ -264,8 +269,6 @@ public class ThermoBody : MonoBehaviour
                 UpdateT();
                 _lastReaction = Time.time;
 
-                // Updates the texture if we are displaying Temp
-                if(_metal.isThermDisplayed)_metal.UpdateTextureThermals();
             }
             
             // Ensures that _delta is bigger than the frame rate !
